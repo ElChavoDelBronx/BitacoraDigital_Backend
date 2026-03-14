@@ -1,9 +1,9 @@
 package mx.edu.utez.bitacoradigitalservices.modules.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import mx.edu.utez.bitacoradigitalservices.kernel.BaseEntity;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
-import org.springframework.aop.Advisor;
 
 import java.util.List;
 
@@ -24,9 +24,11 @@ public class User extends BaseEntity {
     private String token;
 
     @OneToMany(mappedBy = "adviser")
+    @JsonIgnore
     private List<Project> advisers;
 
     @ManyToMany(mappedBy = "students")
+    @JsonIgnore
     private List<Project> students;
 
 

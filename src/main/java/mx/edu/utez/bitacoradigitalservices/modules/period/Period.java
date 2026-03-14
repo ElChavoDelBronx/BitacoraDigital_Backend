@@ -1,5 +1,6 @@
 package mx.edu.utez.bitacoradigitalservices.modules.period;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
@@ -24,6 +25,7 @@ public class Period extends BaseEntity {
     private String state;
 
     @OneToMany(mappedBy = "period")
+    @JsonIgnore
     private List<Project> projects;
 
     public Period() {}
