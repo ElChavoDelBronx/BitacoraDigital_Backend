@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,26 +49,37 @@ public class AuthService {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            String resetToken = UUID.randomUUID().toString();
-            user.setResetToken(resetToken);
-            userRepository.save(user);
 
-            emailService.sendPasswordResetEmail(user.getEmail(), resetToken);
+            String code = String.format("%06d", new java.util.Random().nextInt(999999));
+
+            user.setResetToken(code);
+            user.setResetTokenExpiration(LocalDateTime.now().plusMinutes(15));
+
+            userRepository.save(user);
+            emailService.sendPasswordResetCode(user.getEmail(), code);
         }
     }
 
     public String changePassword(ChangePasswordRequest request) {
-        Optional<User> userOptional = userRepository.findByResetToken(request.getToken());
+        Optional<User> userOptional = userRepository.findByEmailAndResetToken(request.getEmail(), request.getCode());
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
+            if (user.getResetTokenExpiration() != null && LocalDateTime.now().isAfter(user.getResetTokenExpiration())) {
+                user.setResetToken(null);
+                user.setResetTokenExpiration(null);
+                userRepository.save(user);
+                throw new RuntimeException("El código ha expirado. Por favor, solicita uno nuevo.");
+            }
+
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
             user.setResetToken(null);
+            user.setResetTokenExpiration(null);
             userRepository.save(user);
 
             return "Contraseña actualizada exitosamente";
         }
-        throw new RuntimeException("Token de reinicio no válido");
+        throw new RuntimeException("El código es inválido o no pertenece a este correo");
     }
 }

@@ -10,18 +10,15 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendPasswordResetEmail(String toEmail, String token) {
-        // Ajustar el endpoint
-        String resetLink = "http://localhost:5173/recovery?token=" + token;
-
+    public void sendPasswordResetCode(String toEmail, String code) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("andoid2006@gmail.com");
         message.setTo(toEmail);
-        message.setSubject("Solicitud de restablecimiento de contraseña - Bitácora Digital");
+        message.setSubject("Código de Recuperación - Bitácora Digital");
         message.setText("Hola,\n\n" +
-                "Ha solicitado restablecer su contraseña. Por favor haga clic en el enlace a continuación para cambiarlo:\n\n" +
-                resetLink + "\n\n" +
-                "Si no solicitó esto, ignore este correo electrónico.\n\n");
+                "Tu código para restablecer la contraseña es:\n\n" +
+                code + "\n\n" +
+                "Si no solicitaste este cambio, por favor ignora este correo.\n\n");
 
         mailSender.send(message);
     }

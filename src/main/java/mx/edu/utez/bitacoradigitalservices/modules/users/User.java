@@ -5,6 +5,7 @@ import mx.edu.utez.bitacoradigitalservices.kernel.BaseEntity;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
 import org.springframework.aop.Advisor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -24,6 +25,8 @@ public class User extends BaseEntity {
     private String token;
     @Column(name = "reset_token", length = 500)
     private String resetToken;
+    @Column(name = "reset_token_expiration")
+    private LocalDateTime resetTokenExpiration;
 
     @OneToMany(mappedBy = "adviser")
     private List<Project> advisers;
@@ -48,6 +51,8 @@ public class User extends BaseEntity {
     public void setToken(String token) { this.token = token; }
     public String getResetToken() { return resetToken; }
     public void setResetToken(String resetToken) { this.resetToken = resetToken; }
+    public LocalDateTime getResetTokenExpiration() { return resetTokenExpiration; }
+    public void setResetTokenExpiration(LocalDateTime resetTokenExpiration) { this.resetTokenExpiration = resetTokenExpiration; }
 
 
 
