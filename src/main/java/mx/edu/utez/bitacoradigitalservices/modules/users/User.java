@@ -22,6 +22,8 @@ public class User extends BaseEntity {
     private String rol;
     @Column(name = "token", length = 500)
     private String token;
+    @Column(name = "reset_token", length = 500)
+    private String resetToken;
 
     @OneToMany(mappedBy = "adviser")
     private List<Project> advisers;
@@ -44,6 +46,8 @@ public class User extends BaseEntity {
     public void setLastname(String lastname) { this.lastname = lastname; }
     public String getToken() { return token; }
     public void setToken(String token) { this.token = token; }
+    public String getResetToken() { return resetToken; }
+    public void setResetToken(String resetToken) { this.resetToken = resetToken; }
 
 
 
