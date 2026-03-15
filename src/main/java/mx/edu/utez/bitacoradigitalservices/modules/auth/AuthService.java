@@ -1,5 +1,6 @@
 package mx.edu.utez.bitacoradigitalservices.modules.auth;
 
+import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.AuthRequest;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.AuthResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.ChangePasswordRequest;
@@ -8,6 +9,7 @@ import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 import mx.edu.utez.bitacoradigitalservices.modules.users.UserRepository;
 import mx.edu.utez.bitacoradigitalservices.utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -60,18 +62,34 @@ public class AuthService {
         }
     }
 
+    private void verifyResetToken(User user) {
+        if (user.getResetTokenExpiration() != null && LocalDateTime.now().isAfter(user.getResetTokenExpiration())) {
+            user.setResetToken(null);
+            user.setResetTokenExpiration(null);
+            userRepository.save(user);
+            throw new RuntimeException("El código ha expirado. Por favor, solicita uno nuevo.");
+        }
+    }
+
+    public ApiResponse verifyReset(ChangePasswordRequest request) {
+        Optional<User> userOptional = userRepository.findByEmailAndResetToken(request.getEmail(), request.getCode());
+        if(userOptional.isPresent()) {
+            User user = userOptional.get();
+            verifyResetToken(user);
+            return new ApiResponse(
+                    "Código válido",
+                    HttpStatus.OK
+            );
+        }
+        throw new RuntimeException("El código es inválido o no pertenece a este correo");
+    }
+
     public String changePassword(ChangePasswordRequest request) {
         Optional<User> userOptional = userRepository.findByEmailAndResetToken(request.getEmail(), request.getCode());
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-
-            if (user.getResetTokenExpiration() != null && LocalDateTime.now().isAfter(user.getResetTokenExpiration())) {
-                user.setResetToken(null);
-                user.setResetTokenExpiration(null);
-                userRepository.save(user);
-                throw new RuntimeException("El código ha expirado. Por favor, solicita uno nuevo.");
-            }
+            verifyResetToken(user);
 
             user.setPassword(passwordEncoder.encode(request.getNewPassword()));
             user.setResetToken(null);
