@@ -16,3 +16,5 @@ public class SubTask extends BaseEntity {
     @JoinColumn(name = "id_task", referencedColumnName = "id")
     private Task task;
 }
+ 
+
