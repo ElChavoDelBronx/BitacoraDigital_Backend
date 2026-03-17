@@ -19,6 +19,10 @@ public class TaskController {
     public ResponseEntity<ApiResponse> findTaskByProject(@PathVariable("projectId") Long projectId){
         return taskService.findTaskByProject(projectId);
     }
+    @GetMapping("/student/{studentId}")
+    public ResponseEntity<ApiResponse> findTaskByStudent(@PathVariable("studentId") Long studentId){
+        return taskService.findTaskByStudent(studentId);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> findTaskById(@PathVariable("id") Long id) {

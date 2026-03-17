@@ -20,7 +20,8 @@ public class Task extends BaseEntity {
     @Column(name = "due_date", nullable = false)
     private Date dueDate;
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
 
     @ManyToOne
     @JoinColumn(name = "id_project", referencedColumnName = "id")
@@ -61,11 +62,11 @@ public class Task extends BaseEntity {
         this.dueDate = dueDate;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 

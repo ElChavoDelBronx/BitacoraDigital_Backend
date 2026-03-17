@@ -1,6 +1,9 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks;
+
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.SaveTaskDTO;
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskSummaryDTO;
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.utils.TaskUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,27 @@ public class TaskService {
                 taskRepository.findByProjectId(projectId),
                 HttpStatus.OK
         );
+
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+    @Transactional(readOnly = true)
+    public ResponseEntity<ApiResponse> findTaskByStudent(Long studentId){
+        ApiResponse response;
+        List<Task> found = taskRepository.findAllByStudentId(studentId);
+        if(found.isEmpty()){
+            response = new ApiResponse(
+                    "Tareas no encontradas",
+                    true,
+                    HttpStatus.NOT_FOUND
+            );
+        } else {
+            List<TaskSummaryDTO> summary = TaskUtils.entityListToSummaryDTO(found);
+            response = new ApiResponse(
+                    "Tareas obtenidas correctamente",
+                    summary,
+                    HttpStatus.OK
+            );
+        }
 
         return new ResponseEntity<>(response, response.getStatus());
     }
