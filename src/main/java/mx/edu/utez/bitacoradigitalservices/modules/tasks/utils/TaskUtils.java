@@ -12,6 +12,7 @@ public class TaskUtils {
         for (Task task : tasks) {
             TaskSummaryDTO dto = new TaskSummaryDTO(
                     task.getNameTask(),
+                    task.getProject().getNameProject(),
                     task.getDescription(),
                     task.getStatus(),
                     task.getDueDate(),

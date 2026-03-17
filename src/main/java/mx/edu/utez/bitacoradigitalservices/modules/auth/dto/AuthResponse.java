@@ -3,11 +3,16 @@ package mx.edu.utez.bitacoradigitalservices.modules.auth.dto;
 public class AuthResponse {
     private String token;
     private String role;
+    private Long userId;
 
-    public AuthResponse(String token, String role) {
+    public AuthResponse(String token, String role,  Long userId) {
         this.token = token;
         this.role = role;
+        this.userId = userId;
     }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 
     public String getToken() { return token; }
     public void setToken(String token) { this.token = token; }
