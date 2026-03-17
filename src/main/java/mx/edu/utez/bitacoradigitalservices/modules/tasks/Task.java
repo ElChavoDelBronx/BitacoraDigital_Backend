@@ -13,14 +13,21 @@ import java.util.List;
 @Entity
 @Table(name = "task")
 public class Task extends BaseEntity {
+
     @Column(name = "name_task", nullable = false)
-    private String nameProyect;
+    private String nameTask;
+
     @Column(name = "description")
     private String description;
+
     @Column(name = "due_date", nullable = false)
     private Date dueDate;
+
     @Column(name = "status")
     private String status;
+
+    @Column(name = "logged_hours")
+    private Double loggedHours;
 
     @ManyToOne
     @JoinColumn(name = "id_project", referencedColumnName = "id")
@@ -30,11 +37,81 @@ public class Task extends BaseEntity {
     @JoinColumn(name = "id_student", referencedColumnName = "id")
     private User student;
 
-
     @OneToMany(mappedBy = "task")
     private List<SubTask> subTask;
 
     @OneToMany(mappedBy = "task")
     private List<Evidence> evidences;
 
+    public String getNameTask() {
+        return nameTask;
+    }
+
+    public void setNameTask(String nameTask) {
+        this.nameTask = nameTask;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Double getLoggedHours() {
+        return loggedHours;
+    }
+
+    public void setLoggedHours(Double loggedHours) {
+        this.loggedHours = loggedHours;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public User getStudent() {
+        return student;
+    }
+
+    public void setStudent(User student) {
+        this.student = student;
+    }
+
+    public List<SubTask> getSubTask() {
+        return subTask;
+    }
+
+    public void setSubTask(List<SubTask> subTask) {
+        this.subTask = subTask;
+    }
+
+    public List<Evidence> getEvidences() {
+        return evidences;
+    }
+
+    public void setEvidences(List<Evidence> evidences) {
+        this.evidences = evidences;
+    }
 }

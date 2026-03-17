@@ -3,7 +3,6 @@ package mx.edu.utez.bitacoradigitalservices.modules.users;
 import jakarta.persistence.*;
 import mx.edu.utez.bitacoradigitalservices.kernel.BaseEntity;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
-import org.springframework.aop.Advisor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,6 +50,7 @@ public class User extends BaseEntity {
     public void setToken(String token) { this.token = token; }
     public String getResetToken() { return resetToken; }
     public void setResetToken(String resetToken) { this.resetToken = resetToken; }
+
     public LocalDateTime getResetTokenExpiration() { return resetTokenExpiration; }
     public void setResetTokenExpiration(LocalDateTime resetTokenExpiration) { this.resetTokenExpiration = resetTokenExpiration; }
 
