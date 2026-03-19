@@ -7,10 +7,11 @@ import mx.edu.utez.bitacoradigitalservices.modules.tasks.TaskStatus;
 import java.time.LocalDate;
 import java.util.List;
 
-public record TaskSummaryDTO(
+public record TaskBoardDTO(
         Long id,
         String title,
-        String projectName,
+        String studentName,
+
         String description,
         TaskStatus status,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")

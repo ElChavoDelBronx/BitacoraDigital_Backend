@@ -2,6 +2,7 @@ package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.SaveTaskDTO;
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskBoardDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskSummaryDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.utils.TaskUtils;
 import org.springframework.http.HttpStatus;
@@ -23,11 +24,22 @@ public class TaskService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse> findTaskByProject(Long projectId){
-        ApiResponse response = new ApiResponse(
-                "Tareas obtenidas correctamente",
-                taskRepository.findByProjectId(projectId),
-                HttpStatus.OK
-        );
+        ApiResponse response;
+        List<Task> tasks = taskRepository.findByProjectId(projectId);
+        if(tasks.isEmpty()){
+            response = new ApiResponse(
+                    "Tareas no encontradas",
+                    true,
+                    HttpStatus.NOT_FOUND
+            );
+        } else {
+            List<TaskBoardDTO> boardTasks = TaskUtils.entityListToBoardDTO(tasks);
+            response = new ApiResponse(
+                    "Tareas obtenidas correctamente",
+                    boardTasks,
+                    HttpStatus.OK
+            );
+        }
 
         return new ResponseEntity<>(response, response.getStatus());
     }
