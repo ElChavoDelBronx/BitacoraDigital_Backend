@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import mx.edu.utez.bitacoradigitalservices.kernel.BaseEntity;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.Task;
 
 import java.util.List;
 
@@ -34,6 +35,10 @@ public class User extends BaseEntity {
     @JsonIgnore
     private List<Project> projects;
 
+    @OneToMany(mappedBy = "student")
+    @JsonIgnore
+    private List<Task> tasks;
+
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
@@ -55,6 +60,13 @@ public class User extends BaseEntity {
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public UserStatus getUserStatus() {

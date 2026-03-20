@@ -1,8 +1,10 @@
 package mx.edu.utez.bitacoradigitalservices.modules.projects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import mx.edu.utez.bitacoradigitalservices.kernel.BaseEntity;
 import mx.edu.utez.bitacoradigitalservices.modules.period.Period;
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.Task;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 
 import java.util.List;
@@ -31,6 +33,10 @@ public class Project extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "id_student")
     )
     private List<User> students;
+
+    @OneToMany(mappedBy = "project")
+    @JsonIgnore
+    private List<Task> tasks;
 
     public String getNameProject() {
         return nameProject;
@@ -70,5 +76,13 @@ public class Project extends BaseEntity {
 
     public void setStudents(List<User> students) {
         this.students = students;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }

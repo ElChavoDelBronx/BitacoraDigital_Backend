@@ -1,10 +1,14 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
+import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
+import mx.edu.utez.bitacoradigitalservices.modules.projects.ProjectRepository;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.SaveTaskDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskBoardDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskSummaryDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.utils.TaskUtils;
+import mx.edu.utez.bitacoradigitalservices.modules.users.User;
+import mx.edu.utez.bitacoradigitalservices.modules.users.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,10 +20,16 @@ import java.util.List;
 @Service
 public class TaskService {
     private final TaskRepository taskRepository;
+    private final ProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
-    public TaskService(TaskRepository taskRepository){
-
+    public TaskService(
+            TaskRepository taskRepository,
+            ProjectRepository projectRepository,
+            UserRepository userRepository) {
         this.taskRepository = taskRepository;
+        this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional(readOnly = true)
@@ -92,12 +102,16 @@ public class TaskService {
         ApiResponse response;
 
         try{
+            Project project = projectRepository.getReferenceById(dto.projectId());
+            User student = userRepository.getReferenceById(dto.studentId());
             Task task = new Task();
 
             task.setNameTask(dto.nameTask());
             task.setDescription(dto.description());
             task.setDueDate(dto.dueDate());
             task.setStatus(dto.status());
+            task.setProject(project);
+            task.setStudent(student);
 
             Task saved = taskRepository.save(task);
             response = new ApiResponse(

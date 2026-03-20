@@ -1,5 +1,6 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import mx.edu.utez.bitacoradigitalservices.kernel.BaseEntity;
 import mx.edu.utez.bitacoradigitalservices.modules.evidence.Evidence;
@@ -33,9 +34,11 @@ public class Task extends BaseEntity {
 
 
     @OneToMany(mappedBy = "task")
+    @JsonIgnore
     private List<SubTask> subTask;
 
     @OneToMany(mappedBy = "task")
+    @JsonIgnore
     private List<Evidence> evidences;
 
     public String getNameTask() {

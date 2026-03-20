@@ -44,7 +44,7 @@ public class ProjectService {
         if(found != null) {
             response = new ApiResponse(
                     "Proyecto obtenido exitosamente.",
-                    ProjectUtils.entityToSummaryDTO(found),
+                    ProjectUtils.entityToBasicDTO(found),
                     HttpStatus.OK
             );
         } else {
@@ -99,10 +99,9 @@ public class ProjectService {
             ApiResponse tempResponse = validateProject(dto);
             if(tempResponse.getStatus().equals(HttpStatus.OK)) {
                 Project project = (Project) tempResponse.getData();
-                Project saved = projectRepository.save(project);
+                projectRepository.save(project);
                 response = new ApiResponse(
                         "Proyecto creado correctamente.",
-                        ProjectUtils.entityToSummaryDTO(saved),
                         HttpStatus.CREATED
                 );
             } else {
@@ -126,10 +125,9 @@ public class ProjectService {
                 ApiResponse tempResponse = validateProject(dto);
                 if(tempResponse.getStatus().equals(HttpStatus.OK)) {
                     Project project = (Project) tempResponse.getData();
-                    Project saved = projectRepository.save(project);
+                    projectRepository.save(project);
                     response = new ApiResponse(
                             "Proyecto actualizado correctamente.",
-                            ProjectUtils.entityToSummaryDTO(saved),
                             tempResponse.getStatus()
                     );
                 } else {
