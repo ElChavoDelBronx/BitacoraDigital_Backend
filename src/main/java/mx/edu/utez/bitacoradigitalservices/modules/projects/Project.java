@@ -1,8 +1,10 @@
 package mx.edu.utez.bitacoradigitalservices.modules.projects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import mx.edu.utez.bitacoradigitalservices.kernel.BaseEntity;
 import mx.edu.utez.bitacoradigitalservices.modules.period.Period;
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.Task;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 
 import java.util.List;
@@ -23,6 +25,18 @@ public class Project extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "id_period", referencedColumnName = "id")
     private Period period;
+
+    @ManyToMany
+    @JoinTable(
+            name = "student_has_project",
+            joinColumns = @JoinColumn(name = "id_project"),
+            inverseJoinColumns = @JoinColumn(name = "id_student")
+    )
+    private List<User> students;
+
+    @OneToMany(mappedBy = "project")
+    @JsonIgnore
+    private List<Task> tasks;
 
     public String getNameProject() {
         return nameProject;
@@ -64,13 +78,11 @@ public class Project extends BaseEntity {
         this.students = students;
     }
 
-    @ManyToMany
-    @JoinTable(
-            name = "student_has_project",
-            joinColumns = @JoinColumn(name = "id_project"),
-            inverseJoinColumns = @JoinColumn(name = "id_student")
-    )
+    public List<Task> getTasks() {
+        return tasks;
+    }
 
-
-    private List<User> students;
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
 }

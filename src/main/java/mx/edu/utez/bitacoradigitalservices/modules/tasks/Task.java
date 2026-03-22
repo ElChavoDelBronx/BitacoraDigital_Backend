@@ -1,5 +1,6 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import mx.edu.utez.bitacoradigitalservices.kernel.BaseEntity;
 import mx.edu.utez.bitacoradigitalservices.modules.evidence.Evidence;
@@ -7,24 +8,21 @@ import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
 import mx.edu.utez.bitacoradigitalservices.modules.subtasks.SubTask;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Table(name = "task")
 public class Task extends BaseEntity {
-
     @Column(name = "name_task", nullable = false)
     private String nameTask;
-
     @Column(name = "description")
     private String description;
-
     @Column(name = "due_date", nullable = false)
-    private Date dueDate;
-
+    private LocalDate dueDate;
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
 
     @Column(name = "logged_hours")
     private Double loggedHours;
@@ -37,10 +35,13 @@ public class Task extends BaseEntity {
     @JoinColumn(name = "id_student", referencedColumnName = "id")
     private User student;
 
+
     @OneToMany(mappedBy = "task")
+    @JsonIgnore
     private List<SubTask> subTask;
 
     @OneToMany(mappedBy = "task")
+    @JsonIgnore
     private List<Evidence> evidences;
 
     public String getNameTask() {
@@ -59,19 +60,19 @@ public class Task extends BaseEntity {
         this.description = description;
     }
 
-    public Date getDueDate() {
+    public LocalDate getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
@@ -115,3 +116,4 @@ public class Task extends BaseEntity {
         this.evidences = evidences;
     }
 }
+
