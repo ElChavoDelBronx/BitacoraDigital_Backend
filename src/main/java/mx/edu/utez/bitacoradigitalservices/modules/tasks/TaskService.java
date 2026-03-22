@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dto.TaskUpdateDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -80,13 +79,7 @@ public class TaskService {
     @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse> findTasksById(Long id){
         ApiResponse response;
-    public String updateTaskStatusAndHours(Long taskId, TaskUpdateDto request) {
-        Optional<Task> taskOpt = taskRepository.findById(taskId);
-
         Task found = taskRepository.findById(id).orElse(null);
-        if (taskOpt.isPresent()) {
-            Task task = taskOpt.get();
-            task.setStatus(request.getStatus());
 
         if(found != null){
             response = new ApiResponse(
@@ -103,9 +96,21 @@ public class TaskService {
         }
         return new ResponseEntity<>(response, response.getStatus());
     }
-            if ("Completada".equalsIgnoreCase(request.getStatus()) && request.getLoggedHours() != null) {
+    public String updateTaskStatusAndHours(Long taskId, TaskUpdateDto request) {
+        Optional<Task> taskOpt = taskRepository.findById(taskId);
+        if (taskOpt.isPresent()) {
+            Task task = taskOpt.get();
+            task.setStatus(request.getStatus());
+
+            if ("Completada".equalsIgnoreCase(request.getStatus().toString()) && request.getLoggedHours() != null) {
                 task.setLoggedHours(request.getLoggedHours());
             }
+
+            taskRepository.save(task);
+            return "Tarea actualizada exitosamente";
+        }
+        throw new RuntimeException("Tarea no encontrada");
+    }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public ResponseEntity<ApiResponse> saveTask(SaveTaskDTO dto){
@@ -135,13 +140,9 @@ public class TaskService {
                     true,
                     HttpStatus.INTERNAL_SERVER_ERROR
             );
-            taskRepository.save(task);
-            return "Tarea actualizada exitosamente";
         }
         return new ResponseEntity<>(response, response.getStatus());
     }
-
-
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
     public ResponseEntity<ApiResponse> deleteTask(Long id){
@@ -196,6 +197,5 @@ public class TaskService {
             );
         }
         return new ResponseEntity<>(response, response.getStatus());
-        throw new RuntimeException("Tarea no encontrada");
     }
 }

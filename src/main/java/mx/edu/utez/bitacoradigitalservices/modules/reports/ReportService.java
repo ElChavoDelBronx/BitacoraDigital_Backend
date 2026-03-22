@@ -55,7 +55,7 @@ public class ReportService {
         double percentage = (loggedHours / requiredHours) * 100;
         percentage = Math.round(percentage * 100.0) / 100.0;
 
-        String fullName = student.getNameUser() + " " + student.getLastname();
+        String fullName = student.getNameUser() + " " + student.getLastName();
 
         return new StudentReportDto(fullName, loggedHours, requiredHours, Math.min(percentage, 100.0));
     }

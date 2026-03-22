@@ -12,7 +12,7 @@ public class ProjectUtils {
                 p.getId(),
                 p.getNameProject(),
                 p.getDescription(),
-                String.format("%s %s", adviser.getNameUser(), adviser.getLastname()),
+                String.format("%s %s", adviser.getNameUser(), adviser.getLastName()),
                 p.getPeriod().getNamePeriod()
         );
     }

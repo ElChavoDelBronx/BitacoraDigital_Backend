@@ -55,8 +55,6 @@ public class User extends BaseEntity {
     public void setRol(String rol) { this.rol = rol; }
     public String getNameUser() { return nameUser; }
     public void setNameUser(String nameUser) { this.nameUser = nameUser; }
-    public String getLastname() { return lastName; }
-
     public void setToken(String token) { this.token = token; }
     public String getResetToken() { return resetToken; }
     public void setResetToken(String resetToken) { this.resetToken = resetToken; }

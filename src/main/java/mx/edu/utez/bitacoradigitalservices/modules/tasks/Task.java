@@ -116,4 +116,3 @@ public class Task extends BaseEntity {
         this.evidences = evidences;
     }
 }
-
