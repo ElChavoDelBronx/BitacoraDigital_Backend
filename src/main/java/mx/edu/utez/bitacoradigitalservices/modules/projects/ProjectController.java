@@ -22,6 +22,10 @@ public class ProjectController {
     public ResponseEntity<ApiResponse> findProjectById(@PathVariable("id") Long id) {
         return projectService.findProjectById(id);
     }
+    @GetMapping("/saveFormData")
+    public ResponseEntity<ApiResponse> findSaveFormData() {
+        return projectService.findSavingFormData();
+    }
     @PostMapping("")
     public ResponseEntity<ApiResponse> saveProject(@RequestBody SaveProjectDTO dto) {
         return projectService.saveProject(dto);

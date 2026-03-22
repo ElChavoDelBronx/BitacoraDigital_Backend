@@ -3,10 +3,13 @@ package mx.edu.utez.bitacoradigitalservices.modules.projects;
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.period.Period;
 import mx.edu.utez.bitacoradigitalservices.modules.period.PeriodRepository;
+import mx.edu.utez.bitacoradigitalservices.modules.period.dtos.BasicPeriodProjection;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.dtos.SaveProjectDTO;
+import mx.edu.utez.bitacoradigitalservices.modules.projects.dtos.SaveProjectFormDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.utils.ProjectUtils;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 import mx.edu.utez.bitacoradigitalservices.modules.users.UserRepository;
+import mx.edu.utez.bitacoradigitalservices.modules.users.dtos.BasicUserProjection;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -54,6 +57,20 @@ public class ProjectService {
                     HttpStatus.NOT_FOUND
             );
         }
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+    @Transactional(readOnly = true)
+    public ResponseEntity<ApiResponse> findSavingFormData() {
+        ApiResponse response;
+        List<BasicUserProjection> availableStudents = userRepository.findAvailableStudents();
+        List<BasicUserProjection> advisors = userRepository.findAllByRol("Asesor");
+        List<BasicPeriodProjection> periods = periodRepository.findActiveOrFuturePeriod();
+
+        response = new ApiResponse(
+                "Información encontrada con éxito",
+                new SaveProjectFormDTO(periods, availableStudents, advisors),
+                HttpStatus.OK
+        );
         return new ResponseEntity<>(response, response.getStatus());
     }
     private ApiResponse validateProject(SaveProjectDTO dto) {
