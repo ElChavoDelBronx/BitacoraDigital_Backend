@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import mx.edu.utez.bitacoradigitalservices.modules.subtasks.SubTask;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.TaskStatus;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record TaskBoardDTO(
@@ -14,8 +14,8 @@ public record TaskBoardDTO(
 
         String description,
         TaskStatus status,
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-        LocalDate dueDate,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+        LocalDateTime dueDate,
         List<SubTask> subTasks
 ) {
 }

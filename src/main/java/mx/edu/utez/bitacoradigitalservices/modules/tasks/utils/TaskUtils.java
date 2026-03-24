@@ -25,20 +25,22 @@ public class TaskUtils {
         }
         return dtos;
     }
+    public static TaskBoardDTO entityToBoardDTO(Task task) {
+        User student  = task.getStudent();
+        return new TaskBoardDTO(
+                task.getId(),
+                task.getNameTask(),
+                String.format("%s %s", student.getNameUser(), student.getLastname()),
+                task.getDescription(),
+                task.getStatus(),
+                task.getDueDate(),
+                task.getSubTask()
+        );
+    }
     public static List<TaskBoardDTO> entityListToBoardDTO(List<Task> tasks) {
         List<TaskBoardDTO> dtos = new ArrayList<>();
         for (Task task : tasks) {
-            User student = task.getStudent();
-            TaskBoardDTO dto = new TaskBoardDTO(
-                    task.getId(),
-                    task.getNameTask(),
-                    String.format("%s %s", student.getNameUser(), student.getLastName()),
-                    task.getDescription(),
-                    task.getStatus(),
-                    task.getDueDate(),
-                    task.getSubTask()
-            );
-            dtos.add(dto);
+            dtos.add(entityToBoardDTO(task));
         }
         return dtos;
     }

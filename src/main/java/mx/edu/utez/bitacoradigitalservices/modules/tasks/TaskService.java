@@ -124,14 +124,14 @@ public class TaskService {
             task.setNameTask(dto.nameTask());
             task.setDescription(dto.description());
             task.setDueDate(dto.dueDate());
-            task.setStatus(dto.status());
+            task.setStatus(TaskStatus.Pending);
             task.setProject(project);
             task.setStudent(student);
 
             Task saved = taskRepository.save(task);
             response = new ApiResponse(
                     "Tarea creada correctamente",
-                    saved,
+                    TaskUtils.entityToBoardDTO(saved),
                     HttpStatus.CREATED
             );
         } catch (Exception e){
