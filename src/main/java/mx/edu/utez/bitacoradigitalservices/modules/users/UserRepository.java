@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value =
             "SELECT DISTINCT u.id AS id, CONCAT(u.name_user, ' ', u.lastname) AS name FROM user u " +
                     "WHERE u.rol = 'Estudiante' AND u.id NOT IN (" +
-                    "SELECT DISTINCT u.id FROM user u2 JOIN student_has_project shp ON shp.id_student = u2.id " +
+                    "SELECT DISTINCT u2.id FROM user u2 JOIN student_has_project shp ON shp.id_student = u2.id " +
                     "JOIN project p ON p.id = shp.id_project JOIN period pe On pe.id = p.id_period " +
                     "WHERE pe.state = 'Activo')",
             nativeQuery = true)
@@ -35,4 +35,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.projects")
     List<User> findAllUserList ();
+
+    @Query("SELECT DISTINCT u.id AS id, CONCAT(u.nameUser, ' ', u.lastName) AS name " +
+            "FROM User u JOIN u.projects p WHERE p.id = :projectId")
+    List<BasicUserProjection> findStudentsByProjectId (@Param("projectId") Long projectId);
 }

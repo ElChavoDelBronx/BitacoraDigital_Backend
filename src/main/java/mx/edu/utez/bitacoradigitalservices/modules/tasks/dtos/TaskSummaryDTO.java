@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import mx.edu.utez.bitacoradigitalservices.modules.subtasks.SubTask;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.TaskStatus;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record TaskSummaryDTO(
@@ -14,7 +14,7 @@ public record TaskSummaryDTO(
         String description,
         TaskStatus status,
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-        LocalDate dueDate,
+        LocalDateTime dueDate,
         List<SubTask> subTasks
 ) {
 }

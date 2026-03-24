@@ -8,7 +8,7 @@ import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
 import mx.edu.utez.bitacoradigitalservices.modules.subtasks.SubTask;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -19,7 +19,7 @@ public class Task extends BaseEntity {
     @Column(name = "description")
     private String description;
     @Column(name = "due_date", nullable = false)
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
@@ -57,11 +57,11 @@ public class Task extends BaseEntity {
         this.description = description;
     }
 
-    public LocalDate getDueDate() {
+    public LocalDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDate dueDate) {
+    public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 

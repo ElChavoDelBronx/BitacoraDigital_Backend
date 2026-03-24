@@ -15,6 +15,11 @@ public class UserController {
     @GetMapping("")
     public ResponseEntity<ApiResponse> findAllUsers() { return userService.findAllUsers(); }
 
+    @GetMapping("/students/{projectId}")
+    public ResponseEntity<ApiResponse> findStudentsByProject(@PathVariable("projectId") Long projectId) {
+        return userService.findStudentsByProjectId(projectId);
+    }
+
     @PostMapping("")
     public ResponseEntity<ApiResponse> saveUser(@RequestBody UserCreateDTO dto) {
         return userService.saveUser(dto);
