@@ -3,6 +3,7 @@ package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.ProjectRepository;
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.BasicTaskProjection;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.SaveTaskDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskBoardDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskSummaryDTO;
@@ -73,6 +74,25 @@ public class TaskService {
             );
         }
 
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+    @Transactional(readOnly = true)
+    public ResponseEntity<ApiResponse> findInProgressTasks(Long studentId){
+        ApiResponse response;
+        List<BasicTaskProjection> tasks = taskRepository.findInProgressTasks(studentId);
+        if(tasks.isEmpty()){
+            response = new ApiResponse(
+                    "Tareas no encontradas",
+                    true,
+                    HttpStatus.NOT_FOUND
+            );
+        } else {
+            response = new ApiResponse(
+                    "Tareas obtenidas correctamente",
+                    tasks,
+                    HttpStatus.OK
+            );
+        }
         return new ResponseEntity<>(response, response.getStatus());
     }
 

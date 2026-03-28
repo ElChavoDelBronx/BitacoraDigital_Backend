@@ -10,7 +10,45 @@ public class EvidenceFile extends BaseEntity {
     @Column(name = "file", nullable = false)
     private String file;
 
+    @Column(name = "type", nullable = false)
+    private String type;
+
+    @Column(name = "url", nullable = false)
+    private String url;
+
     @ManyToOne
     @JoinColumn(name = "id_evidence", referencedColumnName = "id")
     private Evidence evidence;
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Evidence getEvidence() {
+        return evidence;
+    }
+
+    public void setEvidence(Evidence evidence) {
+        this.evidence = evidence;
+    }
 }

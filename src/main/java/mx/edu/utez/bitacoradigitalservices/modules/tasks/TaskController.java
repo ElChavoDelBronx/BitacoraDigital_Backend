@@ -23,6 +23,10 @@ public class TaskController {
     public ResponseEntity<ApiResponse> findTaskByStudent(@PathVariable("studentId") Long studentId) {
         return taskService.findTaskByStudent(studentId);
     }
+    @GetMapping("/in-progress/{studentId}")
+    public ResponseEntity<ApiResponse> findInProgressTasks(@PathVariable("studentId") Long studentId) {
+        return taskService.findInProgressTasks(studentId);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> findTaskById(@PathVariable("id") Long id) {
         return taskService.findTasksById(id);

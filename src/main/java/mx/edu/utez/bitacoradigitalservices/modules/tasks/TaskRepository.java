@@ -1,5 +1,6 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.BasicTaskProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +16,11 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findAllByStudentId(@Param("studentId") Long studentId);
 
     List<Task> findByProjectIdAndStatus(Long projectId, String status);
+
+    @Query("SELECT t.id AS id, t.nameTask AS title FROM Task t " +
+            "WHERE t.status IN ('InProgress', 'Rejected')  AND t.student.id = :studentId " +
+            "ORDER BY t.dueDate ASC")
+    List<BasicTaskProjection> findInProgressTasks(@Param("studentId") Long studentId);
 
     @Query("SELECT COUNT(t) FROM Task t WHERE t.project.id = :projectId")
     long countTotalTasksByProjectId(@Param("projectId") Long projectId);

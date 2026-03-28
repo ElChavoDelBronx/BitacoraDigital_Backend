@@ -30,7 +30,7 @@ public class TaskUtils {
         return new TaskBoardDTO(
                 task.getId(),
                 task.getNameTask(),
-                String.format("%s %s", student.getNameUser(), student.getLastname()),
+                String.format("%s %s", student.getNameUser(), student.getLastName()),
                 task.getDescription(),
                 task.getStatus(),
                 task.getDueDate(),
