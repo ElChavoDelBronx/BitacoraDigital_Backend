@@ -41,6 +41,15 @@ public class ProjectService {
         return new ResponseEntity<>(response, response.getStatus());
     }
     @Transactional(readOnly = true)
+    public ResponseEntity<ApiResponse> findProjectsByAdvisor(Long advisorId) {
+        ApiResponse response = new ApiResponse(
+                "Proyectos obtenidos exitosamente.",
+                projectRepository.findProjectSummaryByAdvisor(advisorId),
+                HttpStatus.OK
+        );
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+    @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse> findProjectById(Long id) {
         ApiResponse response;
         Project found = projectRepository.findById(id).orElse(null);

@@ -18,6 +18,10 @@ public class ProjectController {
     public ResponseEntity<ApiResponse> findAllProjects() {
         return projectService.findAllProjects();
     }
+    @GetMapping("/advisor/{advisorId}")
+    public ResponseEntity<ApiResponse> findAllProjects(@PathVariable("advisorId") Long advisorId) {
+        return projectService.findProjectsByAdvisor(advisorId);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse> findProjectById(@PathVariable("id") Long id) {
         return projectService.findProjectById(id);
