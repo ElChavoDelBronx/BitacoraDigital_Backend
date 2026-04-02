@@ -3,10 +3,7 @@ package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.ProjectRepository;
-import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.BasicTaskProjection;
-import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.SaveTaskDTO;
-import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskBoardDTO;
-import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskSummaryDTO;
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.*;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.utils.TaskUtils;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 import mx.edu.utez.bitacoradigitalservices.modules.users.UserRepository;
@@ -104,7 +101,7 @@ public class TaskService {
         if(found != null){
             response = new ApiResponse(
                     "Tarea encontrada.",
-                    found,
+                    TaskUtils.entityToDetailedTaskDTO(found),
                     HttpStatus.OK
             );
         } else {

@@ -1,6 +1,9 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks.utils;
 
+import mx.edu.utez.bitacoradigitalservices.modules.evidence.dtos.BasicEvidenceDTO;
+import mx.edu.utez.bitacoradigitalservices.modules.evidenceFiles.utils.EvidenceFileUtils;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.Task;
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.DetailedTaskDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskBoardDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskSummaryDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
@@ -9,6 +12,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TaskUtils {
+    public static DetailedTaskDTO entityToDetailedTaskDTO(Task task) {
+        List<BasicEvidenceDTO> evidences = task.getEvidences().stream()
+                .map(e -> new BasicEvidenceDTO(
+                        e.getFeedback(), e.getStatus(),
+                        EvidenceFileUtils.entityListToListDTO(e.getFiles()))
+                ).toList();
+        System.out.println("Fecha original: "+task.getDueDate());
+        return new DetailedTaskDTO(
+                task.getId(),
+                task.getNameTask(),
+                task.getProject().getNameProject(),
+                task.getDescription(),
+                task.getStatus(),
+                task.getDueDate(),
+                task.getSubTask(),
+                evidences
+        );
+    }
     public static List<TaskSummaryDTO> entityListToSummaryDTO(List<Task> tasks) {
         List<TaskSummaryDTO> dtos = new ArrayList<>();
         for (Task task : tasks) {
