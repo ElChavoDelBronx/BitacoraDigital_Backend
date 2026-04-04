@@ -1,5 +1,6 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 
+import mx.edu.utez.bitacoradigitalservices.modules.dashboard.projections.StudentDashboardTaskCount;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.BasicTaskProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,19 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query("SELECT COALESCE(SUM(t.loggedHours), 0) FROM Task t WHERE t.student.id = :studentId AND t.status = 'DONE'")
     double sumLoggedHoursByStudentId(@Param("studentId") Long studentId);
+
+    @Query(value = "SELECT COUNT(DISTINCT CASE WHEN t.status = 'Completed' THEN t.id END) AS completedTask, " +
+            "COUNT(DISTINCT CASE WHEN t.status = 'InProgress' THEN t.id END) AS InProgressTask, " +
+            "COUNT(DISTINCT t.id) AS totalTasks " +
+            "FROM Task t " +
+            "WHERE t.id_student = :studentId", nativeQuery = true)
+    StudentDashboardTaskCount findStudentDashboardTaskCount(@Param("studentId") Long studentId);
+
+    @Query("SELECT DISTINCT t FROM Task t LEFT JOIN FETCH t.subTask WHERE t.student.id = :studentId ORDER BY t.id DESC LIMIT 2")
+    List<Task> findRecentTasksByStudent(@Param("studentId") Long studentId);
+
+    @Query(value = "SELECT COALESCE(SUM(e.worked_hours), 0) " +
+            "FROM Task t JOIN Evidence e ON e.id_task = t.id " +
+            "WHERE t.id_student = :studentId AND e.status = 'Approved'", nativeQuery = true)
+    Long countValidateHoursByStudent(@Param("studentId") Long studentId);
 }

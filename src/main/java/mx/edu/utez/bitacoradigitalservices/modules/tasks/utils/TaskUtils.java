@@ -30,6 +30,19 @@ public class TaskUtils {
                 evidences
         );
     }
+    public static List<TaskSummaryDTO> entityListToSimplifiedTaskSummaryDTO(List<Task> tasks) {
+        List<TaskSummaryDTO> dtos = new ArrayList<>();
+        for (Task task : tasks) {
+            TaskSummaryDTO dto = new TaskSummaryDTO(
+                    task.getId(),
+                    task.getNameTask(),
+                    task.getProject().getNameProject(),
+                    task.getStatus()
+            );
+            dtos.add(dto);
+        }
+        return dtos;
+    }
     public static List<TaskSummaryDTO> entityListToSummaryDTO(List<Task> tasks) {
         List<TaskSummaryDTO> dtos = new ArrayList<>();
         for (Task task : tasks) {

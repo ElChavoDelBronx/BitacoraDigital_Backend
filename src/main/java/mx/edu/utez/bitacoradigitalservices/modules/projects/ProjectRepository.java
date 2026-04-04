@@ -1,6 +1,7 @@
 package mx.edu.utez.bitacoradigitalservices.modules.projects;
 
 import mx.edu.utez.bitacoradigitalservices.modules.period.Period;
+import mx.edu.utez.bitacoradigitalservices.modules.profile.dtos.StudentProfileProjection;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.dtos.ProjectSummaryDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -42,6 +43,19 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
                     "GROUP BY p.id, p.name_project, p.description, CONCAT(u.name_user, ' ', u.lastname), pe.name_period",
             nativeQuery = true)
     List<ProjectSummaryDTO> findProjectSummaryByAdvisor(@Param("advisorId") Long advisorId);
+
+    @Query(value =
+            "SELECT u.email AS email, pe.name_period AS activePeriod, p.needed_hours AS neededHours, " +
+                    "COALESCE(SUM(e.worked_hours), 0) AS validatedHours " +
+                    "FROM project p " +
+                    "JOIN period pe ON pe.id = p.id_period " +
+                    "JOIN task t ON t.id_project = p.id " +
+                    "JOIN user u ON u.id = t.id_student " +
+                    "JOIN evidence e ON e.id_task = t.id " +
+                    "WHERE pe.state = 'Activo' AND t.id_student = :studentId AND e.status = 'Approved' " +
+                    "GROUP BY u.email, pe.name_period, p.needed_hours"
+            , nativeQuery = true)
+    StudentProfileProjection getStudentProfile(@Param("studentId") Long studentId);
 
     boolean existsByNameProjectAndPeriod(String nameProject, Period period);
 }

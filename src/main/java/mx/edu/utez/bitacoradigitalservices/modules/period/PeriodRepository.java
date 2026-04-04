@@ -12,4 +12,6 @@ public interface PeriodRepository extends JpaRepository<Period, Long> {
 
     @Query("SELECT pe.id AS id, pe.namePeriod AS periodAlias FROM Period pe WHERE pe.state = 'Activo' OR pe.state = 'Futuro' ORDER BY pe.state")
     List<BasicPeriodProjection> findActiveOrFuturePeriod();
+
+    Period findByState(String state);
 }

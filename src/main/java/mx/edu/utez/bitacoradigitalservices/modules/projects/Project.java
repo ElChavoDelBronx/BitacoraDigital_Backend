@@ -18,6 +18,9 @@ public class Project extends BaseEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "needed_hours")
+    private Integer neededHours;
+
     @ManyToOne
     @JoinColumn(name = "id_adviser", referencedColumnName = "id")
     private User adviser;
@@ -52,6 +55,14 @@ public class Project extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getNeededHours() {
+        return neededHours;
+    }
+
+    public void setNeededHours(Integer neededHours) {
+        this.neededHours = neededHours;
     }
 
     public User getAdviser() {

@@ -40,7 +40,7 @@ public class AuthService {
 
                 user.setToken(token);
                 userRepository.save(user);
-                return new AuthResponse(token, user.getRol(), user.getId());
+                return new AuthResponse(token, user.getRol(), user.getId(), String.format("%s %s", user.getNameUser(), user.getLastName()));
             }
         }
         throw new RuntimeException("Credenciales no válidas");
