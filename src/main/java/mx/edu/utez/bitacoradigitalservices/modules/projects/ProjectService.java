@@ -85,7 +85,7 @@ public class ProjectService {
     private ApiResponse validateProject(SaveProjectDTO dto) {
         Period period = periodRepository.getReferenceById(dto.idPeriod());
         boolean isAlreadySaved = projectRepository.existsByNameProjectAndPeriod(dto.projectName(), period);
-        if (isAlreadySaved) {
+        if (isAlreadySaved && dto.id() == null) {
             return new ApiResponse(
                     "Proyecto ya registrado para ese periodo.",
                     true,
@@ -104,6 +104,7 @@ public class ProjectService {
                 project.setPeriod(period);
                 project.setAdviser(adviser);
                 project.setStudents(validStudents);
+                project.setNeededHours(dto.neededHours());
                 return new ApiResponse(
                         "Proyecto validado correctamente.",
                         project,

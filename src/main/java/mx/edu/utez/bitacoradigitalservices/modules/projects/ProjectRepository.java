@@ -17,7 +17,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "CONCAT(u.name_user, ' ', u.lastname) AS advisorName, pe.name_period AS periodName, " +
             "COUNT(DISTINCT shp.id_student) AS studentCount, COUNT(DISTINCT t.id) AS totalTasks, " +
             "COUNT(DISTINCT CASE WHEN t.status = 'Completed' THEN t.id END) AS completedTasks, " +
-            "COALESCE(SUM(DISTINCT CASE WHEN t.status = 'Completed' THEN e.worked_hours END), 0) AS workedHours " +
+            "COALESCE(SUM(DISTINCT CASE WHEN e.status = 'Approved' THEN e.worked_hours END), 0) AS workedHours " +
             "FROM project p " +
             "JOIN user u ON p.id_adviser = u.id " +
             "JOIN period pe ON p.id_period = pe.id " +
@@ -32,7 +32,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
                     "CONCAT(u.name_user, ' ', u.lastname) AS advisorName, pe.name_period AS periodName, " +
                     "COUNT(DISTINCT shp.id_student) AS studentCount, COUNT(DISTINCT t.id) AS totalTasks, " +
                     "COUNT(DISTINCT CASE WHEN t.status = 'Completed' THEN t.id END) AS completedTasks, " +
-                    "COALESCE(SUM(DISTINCT CASE WHEN t.status = 'Completed' THEN e.worked_hours END), 0) AS workedHours " +
+                    "COALESCE(SUM(DISTINCT CASE WHEN e.status = 'Approved' THEN e.worked_hours END), 0) AS workedHours " +
                     "FROM project p " +
                     "JOIN user u ON p.id_adviser = u.id " +
                     "JOIN period pe ON p.id_period = pe.id " +

@@ -8,6 +8,7 @@ public record SaveProjectDTO(
         String description,
         Long idPeriod,
         Long idAdviser,
-        List<Long> studentIds
+        List<Long> studentIds,
+        Integer neededHours
 ) {
 }

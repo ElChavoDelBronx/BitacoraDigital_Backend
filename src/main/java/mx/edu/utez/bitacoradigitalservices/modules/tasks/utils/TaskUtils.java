@@ -18,7 +18,6 @@ public class TaskUtils {
                         e.getFeedback(), e.getStatus(),
                         EvidenceFileUtils.entityListToListDTO(e.getFiles()))
                 ).toList();
-        System.out.println("Fecha original: "+task.getDueDate());
         return new DetailedTaskDTO(
                 task.getId(),
                 task.getNameTask(),
