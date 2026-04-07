@@ -31,7 +31,7 @@ public class AuthService {
 
                 user.setToken(token);
                 userRepository.save(user);
-                return new AuthResponse(token, user.getRol(), user.getId());
+                return new AuthResponse(token, user.getRol(), user.getId(), user.getNameUser());
             }
         }
         throw new RuntimeException("Invalid credentials");

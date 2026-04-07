@@ -33,7 +33,7 @@ public class MainSecurity {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors( c -> c.configurationSource(corsRegistry()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/login", "/error").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -44,7 +44,7 @@ public class MainSecurity {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("*")); //Desde donde puedo llamar
         config.setAllowedHeaders(List.of("*")); //Encabezados que puedo enviar
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         // Cookies
         config.setAllowCredentials(false); //Si está en "True", AllowedOrigins no puedes ser "*"
 
