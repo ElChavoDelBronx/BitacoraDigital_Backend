@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import mx.edu.utez.bitacoradigitalservices.kernel.BaseEntity;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.Task;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -25,6 +27,10 @@ public class User extends BaseEntity {
     private UserStatus userStatus;
     @Column(name = "token", length = 500)
     private String token;
+    @Column(name = "reset_token", length = 500)
+    private String resetToken;
+    @Column(name = "reset_token_expiration")
+    private LocalDateTime resetTokenExpiration;
 
     @OneToMany(mappedBy = "adviser")
     @JsonIgnore
@@ -33,6 +39,10 @@ public class User extends BaseEntity {
     @ManyToMany(mappedBy = "students")
     @JsonIgnore
     private List<Project> projects;
+
+    @OneToMany(mappedBy = "student")
+    @JsonIgnore
+    private List<Task> tasks;
 
 
     public String getEmail() { return email; }
@@ -45,9 +55,12 @@ public class User extends BaseEntity {
     public void setRol(String rol) { this.rol = rol; }
     public String getNameUser() { return nameUser; }
     public void setNameUser(String nameUser) { this.nameUser = nameUser; }
-    public String getLastname() { return lastName; }
-
     public void setToken(String token) { this.token = token; }
+    public String getResetToken() { return resetToken; }
+    public void setResetToken(String resetToken) { this.resetToken = resetToken; }
+
+    public LocalDateTime getResetTokenExpiration() { return resetTokenExpiration; }
+    public void setResetTokenExpiration(LocalDateTime resetTokenExpiration) { this.resetTokenExpiration = resetTokenExpiration; }
 
     public List<Project> getProjects() {
         return projects;
@@ -55,6 +68,13 @@ public class User extends BaseEntity {
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public UserStatus getUserStatus() {

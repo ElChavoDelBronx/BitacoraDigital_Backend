@@ -1,6 +1,7 @@
 package mx.edu.utez.bitacoradigitalservices.modules.users;
 
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
+import mx.edu.utez.bitacoradigitalservices.modules.users.dtos.BasicUserProjection;
 import mx.edu.utez.bitacoradigitalservices.modules.users.dtos.UserCreateDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.users.dtos.UserListDTO;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -28,6 +30,26 @@ public class UserService {
                 userRepository.findAllUserList(),
                 HttpStatus.OK
         );
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+    @Transactional(readOnly = true)
+    public ResponseEntity<ApiResponse> findStudentsByProjectId(Long projectId){
+        ApiResponse response;
+        List<BasicUserProjection> students = userRepository.findStudentsByProjectId(projectId);
+
+        if(!students.isEmpty()){
+            response = new ApiResponse(
+                    "Lista de estudiantes encontrada.",
+                    students,
+                    HttpStatus.OK
+            );
+        } else {
+            response = new ApiResponse(
+                    "Estudiantes no encontrados.",
+                    true,
+                    HttpStatus.NOT_FOUND
+            );
+        }
         return new ResponseEntity<>(response, response.getStatus());
     }
     @Transactional(rollbackFor = {SQLException.class, Exception.class})

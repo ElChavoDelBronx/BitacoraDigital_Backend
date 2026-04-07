@@ -20,6 +20,9 @@ public class AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailService emailService;
+
     public AuthResponse login(AuthRequest request) {
         Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
@@ -31,9 +34,64 @@ public class AuthService {
 
                 user.setToken(token);
                 userRepository.save(user);
-                return new AuthResponse(token, user.getRol(), user.getId(), user.getNameUser());
+                return new AuthResponse(token, user.getRol(), user.getId(), String.format("%s %s", user.getNameUser(), user.getLastName()));
             }
         }
-        throw new RuntimeException("Invalid credentials");
+        throw new RuntimeException("Credenciales no válidas");
+    }
+
+    public void requestPasswordReset(ResetPasswordRequest request) {
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            String code = String.format("%06d", new java.util.Random().nextInt(999999));
+
+            user.setResetToken(code);
+            user.setResetTokenExpiration(LocalDateTime.now().plusMinutes(15));
+
+            userRepository.save(user);
+            emailService.sendPasswordResetCode(user.getEmail(), code);
+        }
+    }
+
+    private void verifyResetToken(User user) {
+        if (user.getResetTokenExpiration() != null && LocalDateTime.now().isAfter(user.getResetTokenExpiration())) {
+            user.setResetToken(null);
+            user.setResetTokenExpiration(null);
+            userRepository.save(user);
+            throw new RuntimeException("El código ha expirado. Por favor, solicita uno nuevo.");
+        }
+    }
+
+    public ApiResponse verifyReset(ChangePasswordRequest request) {
+        Optional<User> userOptional = userRepository.findByEmailAndResetToken(request.getEmail(), request.getCode());
+        if(userOptional.isPresent()) {
+            User user = userOptional.get();
+            verifyResetToken(user);
+            return new ApiResponse(
+                    "Código válido",
+                    HttpStatus.OK
+            );
+        }
+        throw new RuntimeException("El código es inválido o no pertenece a este correo");
+    }
+
+    public String changePassword(ChangePasswordRequest request) {
+        Optional<User> userOptional = userRepository.findByEmailAndResetToken(request.getEmail(), request.getCode());
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            verifyResetToken(user);
+
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            user.setResetToken(null);
+            user.setResetTokenExpiration(null);
+            userRepository.save(user);
+
+            return "Contraseña actualizada exitosamente";
+        }
+        throw new RuntimeException("El código es inválido o no pertenece a este correo");
     }
 }

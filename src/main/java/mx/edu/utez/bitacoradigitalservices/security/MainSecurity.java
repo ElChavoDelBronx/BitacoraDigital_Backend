@@ -33,7 +33,8 @@ public class MainSecurity {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors( c -> c.configurationSource(corsRegistry()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/error").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/auth/request-reset", "/api/auth/verify-reset",
+                                "/api/auth/change-password").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -1,5 +1,6 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import mx.edu.utez.bitacoradigitalservices.kernel.BaseEntity;
 import mx.edu.utez.bitacoradigitalservices.modules.evidence.Evidence;
@@ -7,7 +8,7 @@ import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
 import mx.edu.utez.bitacoradigitalservices.modules.subtasks.SubTask;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -18,10 +19,13 @@ public class Task extends BaseEntity {
     @Column(name = "description")
     private String description;
     @Column(name = "due_date", nullable = false)
-    private LocalDate dueDate;
+    private LocalDateTime dueDate;
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private TaskStatus status;
+
+    @Column(name = "logged_hours")
+    private Double loggedHours;
 
     @ManyToOne
     @JoinColumn(name = "id_project", referencedColumnName = "id")
@@ -33,9 +37,11 @@ public class Task extends BaseEntity {
 
 
     @OneToMany(mappedBy = "task")
+    @JsonIgnore
     private List<SubTask> subTask;
 
     @OneToMany(mappedBy = "task")
+    @JsonIgnore
     private List<Evidence> evidences;
 
     public String getNameTask() {
@@ -54,11 +60,11 @@ public class Task extends BaseEntity {
         this.description = description;
     }
 
-    public LocalDate getDueDate() {
+    public LocalDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(LocalDate dueDate) {
+    public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -68,6 +74,14 @@ public class Task extends BaseEntity {
 
     public void setStatus(TaskStatus status) {
         this.status = status;
+    }
+
+    public Double getLoggedHours() {
+        return loggedHours;
+    }
+
+    public void setLoggedHours(Double loggedHours) {
+        this.loggedHours = loggedHours;
     }
 
     public Project getProject() {
@@ -102,4 +116,3 @@ public class Task extends BaseEntity {
         this.evidences = evidences;
     }
 }
-
