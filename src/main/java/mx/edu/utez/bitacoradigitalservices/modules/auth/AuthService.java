@@ -1,13 +1,19 @@
 package mx.edu.utez.bitacoradigitalservices.modules.auth;
 
+import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.AuthRequest;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.AuthResponse;
+import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.ChangePasswordRequest;
+import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.ResetPasswordRequest;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 import mx.edu.utez.bitacoradigitalservices.modules.users.UserRepository;
+import mx.edu.utez.bitacoradigitalservices.utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
