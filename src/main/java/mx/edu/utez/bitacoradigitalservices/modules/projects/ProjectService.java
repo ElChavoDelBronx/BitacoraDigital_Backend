@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProjectService {
@@ -84,8 +85,8 @@ public class ProjectService {
     }
     private ApiResponse validateProject(SaveProjectDTO dto) {
         Period period = periodRepository.getReferenceById(dto.idPeriod());
-        boolean isAlreadySaved = projectRepository.existsByNameProjectAndPeriod(dto.projectName(), period);
-        if (isAlreadySaved && dto.id() == null) {
+        Project alreadySaved = projectRepository.findExistingProject(dto.projectName(), dto.idPeriod());
+        if (alreadySaved != null && !Objects.equals(alreadySaved.getId(), dto.id())) {
             return new ApiResponse(
                     "Proyecto ya registrado para ese periodo.",
                     true,

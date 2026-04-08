@@ -10,7 +10,9 @@ import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 import java.util.List;
 
 @Entity
-@Table(name = "project")
+@Table(name = "project",
+    uniqueConstraints = {@UniqueConstraint(name = "UC_Name_Period", columnNames = {"name_project", "id_period"})}
+)
 public class Project extends BaseEntity {
     @Column(name = "name_project", nullable = false)
     private String nameProject;

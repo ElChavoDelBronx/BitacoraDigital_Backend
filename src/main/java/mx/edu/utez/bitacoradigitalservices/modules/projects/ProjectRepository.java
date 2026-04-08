@@ -1,6 +1,5 @@
 package mx.edu.utez.bitacoradigitalservices.modules.projects;
 
-import mx.edu.utez.bitacoradigitalservices.modules.period.Period;
 import mx.edu.utez.bitacoradigitalservices.modules.profile.dtos.StudentProfileProjection;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.dtos.ProjectSummaryDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -57,5 +56,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             , nativeQuery = true)
     StudentProfileProjection getStudentProfile(@Param("studentId") Long studentId);
 
-    boolean existsByNameProjectAndPeriod(String nameProject, Period period);
+    @Query("SELECT p FROM Project p WHERE p.nameProject = :projectName AND p.period.id = :idPeriod")
+    Project findExistingProject(@Param("projectName") String nameProject, @Param("idPeriod") Long period);
 }
