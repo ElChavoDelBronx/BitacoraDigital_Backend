@@ -5,12 +5,14 @@ public class AuthResponse {
     private String role;
     private Long userId;
     private String userName;
+    private boolean firstSigIn;
 
-    public AuthResponse(String token, String role,  Long userId,  String userName) {
+    public AuthResponse(String token, String role,  Long userId,  String userName, boolean firstSigIn) {
         this.token = token;
         this.role = role;
         this.userId = userId;
         this.userName = userName;
+        this.firstSigIn = firstSigIn;
     }
 
     public Long getUserId() { return userId; }
@@ -24,4 +26,7 @@ public class AuthResponse {
 
     public String getUserName() { return userName; }
     public void setUserName(String userName) { this.userName = userName; }
+
+    public boolean isFirstSigIn() { return firstSigIn; }
+    public void setFirstSigIn(boolean firstSigIn) { this.firstSigIn = firstSigIn; }
 }

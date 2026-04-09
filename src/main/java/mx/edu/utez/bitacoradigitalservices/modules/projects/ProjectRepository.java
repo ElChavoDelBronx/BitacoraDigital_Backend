@@ -57,5 +57,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             , nativeQuery = true)
     StudentProfileProjection getStudentProfile(@Param("studentId") Long studentId);
 
-    boolean existsByNameProjectAndPeriod(String nameProject, Period period);
+    @Query("SELECT p FROM Project p WHERE p.nameProject = :projectName AND p.period.id = :idPeriod")
+    Project findExistingProject(@Param("projectName") String nameProject, @Param("idPeriod") Long period);
 }

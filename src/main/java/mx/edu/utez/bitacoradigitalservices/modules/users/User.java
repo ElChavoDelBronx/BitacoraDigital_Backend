@@ -31,6 +31,8 @@ public class User extends BaseEntity {
     private String resetToken;
     @Column(name = "reset_token_expiration")
     private LocalDateTime resetTokenExpiration;
+    @Column(name = "first_sign_in")
+    private boolean firstSignIn = true;
 
     @OneToMany(mappedBy = "adviser")
     @JsonIgnore
@@ -90,6 +92,14 @@ public class User extends BaseEntity {
     }
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public boolean isFirstSignIn() {
+        return firstSignIn;
+    }
+
+    public void setFirstSignIn(boolean firstSignIn) {
+        this.firstSignIn = firstSignIn;
     }
 
     /*

@@ -33,8 +33,13 @@ public class MainSecurity {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors( c -> c.configurationSource(corsRegistry()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/request-reset", "/api/auth/verify-reset",
-                                "/api/auth/change-password").permitAll()
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/first-login",
+                                "/api/auth/request-reset",
+                                "/api/auth/verify-reset",
+                                "/api/auth/change-password"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -43,11 +48,10 @@ public class MainSecurity {
 
     private CorsConfigurationSource corsRegistry() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("*")); //Desde donde puedo llamar
-        config.setAllowedHeaders(List.of("*")); //Encabezados que puedo enviar
+        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        // Cookies
-        config.setAllowCredentials(false); //Si está en "True", AllowedOrigins no puedes ser "*"
+        config.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource src = new UrlBasedCorsConfigurationSource();
         src.registerCorsConfiguration("/**", config);

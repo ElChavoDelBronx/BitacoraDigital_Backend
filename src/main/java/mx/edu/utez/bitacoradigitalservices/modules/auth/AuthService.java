@@ -7,6 +7,7 @@ import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.ChangePasswordReques
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.ResetPasswordRequest;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 import mx.edu.utez.bitacoradigitalservices.modules.users.UserRepository;
+import mx.edu.utez.bitacoradigitalservices.modules.users.UserStatus;
 import mx.edu.utez.bitacoradigitalservices.utils.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,13 +35,24 @@ public class AuthService {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
+
+            if(user.getUserStatus() != UserStatus.Active){
+                throw new RuntimeException("Tu cuenta está inactiva. Contacta al administrador.");
+            }
+
             if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 
                 String token = UUID.randomUUID().toString();
 
                 user.setToken(token);
                 userRepository.save(user);
-                return new AuthResponse(token, user.getRol(), user.getId(), String.format("%s %s", user.getNameUser(), user.getLastName()));
+                return new AuthResponse(
+                        token,
+                        user.getRol(),
+                        user.getId(),
+                        String.format("%s %s", user.getNameUser(), user.getLastName()),
+                        user.isFirstSignIn()
+                );
             }
         }
         throw new RuntimeException("Credenciales no válidas");
@@ -99,5 +111,31 @@ public class AuthService {
             return "Contraseña actualizada exitosamente";
         }
         throw new RuntimeException("El código es inválido o no pertenece a este correo");
+    }
+
+    public ApiResponse changeInitialPassword(String email, String tempPassword, String newPassword) {
+
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            if (!user.isFirstSignIn()) {
+                throw new RuntimeException("El usuario ya ha cambiado su contraseña inicial anteriormente");
+            }
+
+            if (!passwordEncoder.matches(tempPassword, user.getPassword())) {
+                throw new RuntimeException("La contraseña temporal es incorrecta");
+            }
+
+            user.setPassword(passwordEncoder.encode(newPassword));
+
+            user.setFirstSignIn(false);
+
+            userRepository.save(user);
+
+            return new ApiResponse("Contraseña actualizada exitosamente", HttpStatus.OK);
+        }
+        throw new RuntimeException("Usuario no encontrado");
     }
 }
