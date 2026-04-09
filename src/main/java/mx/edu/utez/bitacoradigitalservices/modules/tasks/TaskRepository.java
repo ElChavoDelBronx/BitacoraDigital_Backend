@@ -29,6 +29,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT COUNT(t) FROM Task t WHERE t.project.id = :projectId AND t.status = 'DONE'")
     long countCompletedTasksByProjectId(@Param("projectId") Long projectId);
 
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.status = 'Completed'")
+    long countCompletedTasks();
+
     @Query("SELECT COALESCE(SUM(t.loggedHours), 0) FROM Task t WHERE t.student.id = :studentId AND t.status = 'DONE'")
     double sumLoggedHoursByStudentId(@Param("studentId") Long studentId);
 

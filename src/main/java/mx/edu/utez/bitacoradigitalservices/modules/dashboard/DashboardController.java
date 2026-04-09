@@ -20,5 +20,9 @@ public class DashboardController {
     public ResponseEntity<ApiResponse> getStudentDashboard(@PathVariable("studentId") Long studentId) {
         return dashboardService.getStudentDashboard(studentId);
     }
+    @GetMapping("/admin")
+    public ResponseEntity<ApiResponse> getAdminDashboard() {
+        return dashboardService.getAdminDashboard();
+    }
 
 }
