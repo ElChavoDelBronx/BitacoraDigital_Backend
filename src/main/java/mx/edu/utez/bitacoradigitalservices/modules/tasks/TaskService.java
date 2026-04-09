@@ -189,10 +189,10 @@ public class TaskService {
         try {
             Task existing = taskRepository.findById(dto.id()).orElse(null);
             if(existing != null){
-                existing.setNameTask(dto.nameTask());
-                existing.setDescription(dto.description());
-                existing.setDueDate(dto.dueDate());
-                existing.setStatus(dto.status());
+                if(dto.nameTask() != null) existing.setNameTask(dto.nameTask());
+                if(dto.description() != null) existing.setDescription(dto.description());
+                if(dto.dueDate() != null) existing.setDueDate(dto.dueDate());
+                if(dto.status() != null) existing.setStatus(dto.status());
                 Task saved = taskRepository.save(existing);
                 response = new ApiResponse(
                         "Tarea actualizada correctamente",

@@ -1,6 +1,5 @@
 package mx.edu.utez.bitacoradigitalservices.modules.projects;
 
-import mx.edu.utez.bitacoradigitalservices.modules.period.Period;
 import mx.edu.utez.bitacoradigitalservices.modules.profile.dtos.StudentProfileProjection;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.dtos.ProjectSummaryDTO;
 import org.springframework.data.jpa.repository.JpaRepository;

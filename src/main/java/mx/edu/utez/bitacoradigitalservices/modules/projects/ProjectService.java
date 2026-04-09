@@ -86,7 +86,7 @@ public class ProjectService {
     private ApiResponse validateProject(SaveProjectDTO dto) {
         Period period = periodRepository.getReferenceById(dto.idPeriod());
         Project alreadySaved = projectRepository.findExistingProject(dto.projectName(), dto.idPeriod());
-        if (alreadySaved != null && !Objects.equals(dto.id(), alreadySaved.getId())) {
+        if (alreadySaved != null && !Objects.equals(alreadySaved.getId(), dto.id())) {
             return new ApiResponse(
                     "Proyecto ya registrado para ese periodo.",
                     true,
