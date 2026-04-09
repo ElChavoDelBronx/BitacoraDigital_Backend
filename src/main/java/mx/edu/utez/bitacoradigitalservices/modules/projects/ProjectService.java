@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -74,7 +75,7 @@ public class ProjectService {
         ApiResponse response;
         List<BasicUserProjection> availableStudents = userRepository.findAvailableStudents();
         List<BasicUserProjection> advisors = userRepository.findAllByRol("Asesor");
-        List<BasicPeriodProjection> periods = periodRepository.findActiveOrFuturePeriod();
+        List<BasicPeriodProjection> periods = periodRepository.findActiveOrFuturePeriod(LocalDateTime.now());
 
         response = new ApiResponse(
                 "Información encontrada con éxito",

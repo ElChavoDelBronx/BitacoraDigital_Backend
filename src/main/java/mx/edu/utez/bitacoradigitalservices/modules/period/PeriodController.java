@@ -1,7 +1,9 @@
 package mx.edu.utez.bitacoradigitalservices.modules.period;
 
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
+import mx.edu.utez.bitacoradigitalservices.modules.period.dtos.SavePeriodDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,13 +16,9 @@ public class PeriodController {
         this.service = service;
     }
 
-    @GetMapping
-    public ApiResponse getAll() {
-        return new ApiResponse(
-                "Lista de periodos",
-                service.findAll(),
-                HttpStatus.OK
-        );
+    @GetMapping("")
+    public ResponseEntity<ApiResponse> getAll() {
+        return service.findAll();
     }
 
     @GetMapping("/{id}")
@@ -42,51 +40,18 @@ public class PeriodController {
         );
     }
 
-    @PostMapping
-    public ApiResponse save(@RequestBody Period period) {
-        return new ApiResponse(
-                "Periodo creado",
-                service.save(period),
-                HttpStatus.CREATED
-        );
+    @PostMapping("")
+    public ResponseEntity<ApiResponse> save(@RequestBody SavePeriodDTO dto) {
+        return service.save(dto);
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse update(@PathVariable Long id, @RequestBody Period period) {
-
-        Period updated = service.update(id, period);
-
-        if (updated == null) {
-            return new ApiResponse(
-                    "Periodo no encontrado",
-                    true,
-                    HttpStatus.NOT_FOUND
-            );
-        }
-
-        return new ApiResponse(
-                "Periodo actualizado",
-                updated,
-                HttpStatus.OK
-        );
+    @PutMapping("")
+    public ResponseEntity<ApiResponse> update(@RequestBody SavePeriodDTO dto) {
+        return service.update(dto);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse delete(@PathVariable Long id) {
-
-        boolean deleted = service.delete(id);
-
-        if (!deleted) {
-            return new ApiResponse(
-                    "Periodo no encontrado",
-                    true,
-                    HttpStatus.NOT_FOUND
-            );
-        }
-
-        return new ApiResponse(
-                "Periodo eliminado",
-                HttpStatus.OK
-        );
+    public ResponseEntity<ApiResponse> delete(@PathVariable Long id) {
+        return service.delete(id);
     }
 }

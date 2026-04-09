@@ -30,7 +30,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
                     "WHERE u.rol = 'Estudiante' AND u.id NOT IN (" +
                     "SELECT DISTINCT u2.id FROM user u2 JOIN student_has_project shp ON shp.id_student = u2.id " +
                     "JOIN project p ON p.id = shp.id_project JOIN period pe On pe.id = p.id_period " +
-                    "WHERE pe.state = 'Activo' OR pe.state = 'Futuro')",
+                    "WHERE (NOW() BETWEEN pe.start_date AND pe.due_date) " +
+                    "OR (NOW() < pe.start_date))",
             nativeQuery = true)
     List<BasicUserProjection> findAvailableStudents();
 

@@ -51,7 +51,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
                     "JOIN task t ON t.id_project = p.id " +
                     "JOIN user u ON u.id = t.id_student " +
                     "JOIN evidence e ON e.id_task = t.id " +
-                    "WHERE pe.state = 'Activo' AND t.id_student = :studentId AND e.status = 'Approved' " +
+                    "WHERE CURRENT_TIMESTAMP BETWEEN pe.start_date AND pe.due_date " +
+                    "AND t.id_student = :studentId AND e.status = 'Approved' " +
                     "GROUP BY u.email, pe.name_period, p.needed_hours"
             , nativeQuery = true)
     StudentProfileProjection getStudentProfile(@Param("studentId") Long studentId);

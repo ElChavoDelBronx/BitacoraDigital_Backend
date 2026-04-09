@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,7 +33,7 @@ public class DashboardService {
         StudentDashboardTaskCount taskCount = taskRepository.findStudentDashboardTaskCount(studentId);
         List<Task> recentTasks = taskRepository.findRecentTasksByStudent(studentId);
         Long validatedHours = taskRepository.countValidateHoursByStudent(studentId);
-        String periodAlias = periodRepository.findByState("Activo").getNamePeriod();
+        String periodAlias = periodRepository.findActivePeriod(LocalDateTime.now()).getNamePeriod();
 
         response = new ApiResponse(
                 "Información encontrada con éxito",
