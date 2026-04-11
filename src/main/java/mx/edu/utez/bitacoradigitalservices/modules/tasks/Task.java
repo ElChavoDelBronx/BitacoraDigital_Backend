@@ -36,7 +36,7 @@ public class Task extends BaseEntity {
     private User student;
 
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<SubTask> subTask;
 
@@ -114,5 +114,10 @@ public class Task extends BaseEntity {
 
     public void setEvidences(List<Evidence> evidences) {
         this.evidences = evidences;
+    }
+
+    public void addSubtask(SubTask subtask) {
+        this.subTask.add(subtask);
+        subtask.setTask(this);
     }
 }
