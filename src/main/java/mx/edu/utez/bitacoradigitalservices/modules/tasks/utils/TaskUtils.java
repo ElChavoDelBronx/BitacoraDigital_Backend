@@ -7,6 +7,7 @@ import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.DetailedTaskDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskBoardDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.TaskSummaryDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
+import mx.edu.utez.bitacoradigitalservices.modules.users.dtos.BasicUserDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +64,10 @@ public class TaskUtils {
         return new TaskBoardDTO(
                 task.getId(),
                 task.getNameTask(),
-                String.format("%s %s", student.getNameUser(), student.getLastName()),
+                new BasicUserDTO(
+                    student.getId(),
+                    String.format("%s %s", student.getNameUser(), student.getLastName())
+                ),
                 task.getDescription(),
                 task.getStatus(),
                 task.getDueDate(),

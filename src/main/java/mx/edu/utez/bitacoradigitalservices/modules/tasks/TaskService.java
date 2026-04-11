@@ -3,6 +3,8 @@ package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.ProjectRepository;
+import mx.edu.utez.bitacoradigitalservices.modules.subtasks.SubTask;
+import mx.edu.utez.bitacoradigitalservices.modules.subtasks.dtos.SubtaskDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.*;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.utils.TaskUtils;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
@@ -183,16 +185,18 @@ public class TaskService {
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})
-    public ResponseEntity<ApiResponse> updateTask(SaveTaskDTO dto){
+    public ResponseEntity<ApiResponse> updateTask(UpdateTaskDTO dto){
         ApiResponse response;
 
         try {
             Task existing = taskRepository.findById(dto.id()).orElse(null);
             if(existing != null){
-                if(dto.nameTask() != null) existing.setNameTask(dto.nameTask());
+                if(dto.title() != null) existing.setNameTask(dto.title());
                 if(dto.description() != null) existing.setDescription(dto.description());
                 if(dto.dueDate() != null) existing.setDueDate(dto.dueDate());
                 if(dto.status() != null) existing.setStatus(dto.status());
+                if(dto.studentId() != null) existing.setStudent(userRepository.getReferenceById(dto.studentId()));
+
                 Task saved = taskRepository.save(existing);
                 response = new ApiResponse(
                         "Tarea actualizada correctamente",
@@ -212,6 +216,31 @@ public class TaskService {
                     true,
                     HttpStatus.INTERNAL_SERVER_ERROR
             );
+        }
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    public ResponseEntity<ApiResponse> saveSubtask(SubtaskDTO dto) {
+        ApiResponse response;
+        try {
+            Task task = taskRepository.findById(dto.idTask()).orElse(null);
+            if(task != null ) {
+                System.out.println("Titulo de subtarea: "+dto.name());
+                SubTask subtask = new SubTask();
+                subtask.setName(dto.name());
+                subtask.setChecked(false);
+                task.addSubtask(subtask);
+                task = taskRepository.saveAndFlush(task);
+
+                SubTask savedSubtask = task.getSubTask().stream().filter(s -> s.getName().equals(dto.name())).findFirst().get();
+
+                response = new ApiResponse("Subtarea registrada con exito", savedSubtask.getId(), HttpStatus.CREATED);
+            } else {
+                response = new ApiResponse("Tarea correspondiente no encontrada", true, HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+            response = new ApiResponse("Error Interno del Servidor", true, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(response, response.getStatus());
     }

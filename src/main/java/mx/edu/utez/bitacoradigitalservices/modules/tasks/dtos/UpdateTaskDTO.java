@@ -1,21 +1,16 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos;
 
-import mx.edu.utez.bitacoradigitalservices.modules.subtasks.SubTask;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.TaskStatus;
-import mx.edu.utez.bitacoradigitalservices.modules.users.dtos.BasicUserDTO;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-public record TaskBoardDTO(
+public record UpdateTaskDTO(
         Long id,
         String title,
-        BasicUserDTO student,
-
+        Long studentId,
         String description,
         TaskStatus status,
         //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-        LocalDateTime dueDate,
-        List<SubTask> subTasks
+        LocalDateTime dueDate
 ) {
 }

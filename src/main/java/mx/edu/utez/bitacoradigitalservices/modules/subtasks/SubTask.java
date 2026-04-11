@@ -31,6 +31,14 @@ public class SubTask extends BaseEntity {
     public void setChecked(boolean checked) {
         this.checked = checked;
     }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
 }
  
 

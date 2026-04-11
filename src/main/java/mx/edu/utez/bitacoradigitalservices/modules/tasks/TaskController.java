@@ -1,8 +1,10 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 
+import mx.edu.utez.bitacoradigitalservices.modules.subtasks.dtos.SubtaskDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dto.TaskUpdateDto;
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.SaveTaskDTO;
+import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.UpdateTaskDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,9 +38,13 @@ public class TaskController {
     public ResponseEntity<ApiResponse> saveTask(@RequestBody SaveTaskDTO dto){
         return taskService.saveTask(dto);
     }
+    @PostMapping("/save-subtask")
+    public ResponseEntity<ApiResponse> saveSubtask(@RequestBody SubtaskDTO dto){
+        return taskService.saveSubtask(dto);
+    }
 
     @PutMapping("")
-    public ResponseEntity<ApiResponse> updateTask(@RequestBody SaveTaskDTO dto){
+    public ResponseEntity<ApiResponse> updateTask(@RequestBody UpdateTaskDTO dto){
         return taskService.updateTask(dto);
     }
     @PutMapping("/{id}/status")

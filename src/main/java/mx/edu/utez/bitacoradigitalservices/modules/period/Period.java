@@ -21,8 +21,6 @@ public class Period extends BaseEntity {
     private LocalDateTime startDate;
     @Column(name = "due_date", nullable = false)
     private LocalDateTime dueDate;
-    @Column(name = "state", nullable = false)
-    private String state;
 
     @OneToMany(mappedBy = "period")
     @JsonIgnore
@@ -52,14 +50,6 @@ public class Period extends BaseEntity {
 
     public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 
     public List<Project> getProjects() {
