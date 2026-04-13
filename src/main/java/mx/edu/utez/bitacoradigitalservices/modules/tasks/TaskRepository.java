@@ -43,7 +43,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findRecentTasksByStudent(@Param("studentId") Long studentId);
 
     @Query(value = "SELECT COALESCE(SUM(e.worked_hours), 0) " +
-            "FROM Task t JOIN Evidence e ON e.id_task = t.id " +
-            "WHERE t.id_student = :studentId AND e.status = 'Approved'", nativeQuery = true)
+            "FROM Task t JOIN Project p ON p.id = t.id_project " +
+            "JOIN Period pe ON pe.id = p.id_period " +
+            "JOIN Evidence e ON e.id_task = t.id " +
+            "WHERE t.id_student = :studentId AND e.status = 'Approved'" +
+            "AND NOW() BETWEEN pe.start_date AND pe.due_date", nativeQuery = true)
     Long countValidateHoursByStudent(@Param("studentId") Long studentId);
 }

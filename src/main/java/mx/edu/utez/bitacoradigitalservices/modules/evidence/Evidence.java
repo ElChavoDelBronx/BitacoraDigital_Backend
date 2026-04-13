@@ -26,7 +26,7 @@ public class Evidence extends BaseEntity {
     private EvidenceStatus status;
 
     @Column(name = "feedback")
-    private String feedback;
+    private String feedback = "";
 
     @ManyToOne
     @JoinColumn(name = "id_task", referencedColumnName = "id")

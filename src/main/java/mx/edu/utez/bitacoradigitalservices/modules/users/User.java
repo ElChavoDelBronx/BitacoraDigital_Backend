@@ -31,7 +31,7 @@ public class User extends BaseEntity {
     private String resetToken;
     @Column(name = "reset_token_expiration")
     private LocalDateTime resetTokenExpiration;
-    @Column(name = "first_sign_in")
+    @Column(name = "first_sign_in", nullable = false)
     private boolean firstSignIn = true;
 
     @OneToMany(mappedBy = "adviser")

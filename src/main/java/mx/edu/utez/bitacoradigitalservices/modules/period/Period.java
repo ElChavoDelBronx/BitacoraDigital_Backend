@@ -15,7 +15,7 @@ import java.util.List;
 @Table(name = "period")
 public class Period extends BaseEntity {
     @Column(name = "name_period", nullable = false)
-    private String namePeriod;
+    private String namePeriod = "N/A";
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
     @Column(name = "due_date", nullable = false)

@@ -4,6 +4,7 @@ import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.dashboard.dtos.StudentDashboardDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.dashboard.dtos.StudentStatisticsDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.dashboard.projections.StudentDashboardTaskCount;
+import mx.edu.utez.bitacoradigitalservices.modules.period.Period;
 import mx.edu.utez.bitacoradigitalservices.modules.period.PeriodRepository;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.Task;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.TaskRepository;
@@ -33,12 +34,12 @@ public class DashboardService {
         StudentDashboardTaskCount taskCount = taskRepository.findStudentDashboardTaskCount(studentId);
         List<Task> recentTasks = taskRepository.findRecentTasksByStudent(studentId);
         Long validatedHours = taskRepository.countValidateHoursByStudent(studentId);
-        String periodAlias = periodRepository.findActivePeriod(LocalDate.now()).getNamePeriod();
+        Period activePeriod = periodRepository.findActivePeriod(LocalDate.now()).orElse(new Period());
 
         response = new ApiResponse(
                 "Información encontrada con éxito",
                 new StudentDashboardDTO(
-                        periodAlias,
+                        activePeriod.getNamePeriod(),
                         new StudentStatisticsDTO(taskCount.getCompletedTask(), taskCount.getInProgressTask(), taskCount.getTotalTasks(), validatedHours),
                         TaskUtils.entityListToSimplifiedTaskSummaryDTO(recentTasks)
                 ),

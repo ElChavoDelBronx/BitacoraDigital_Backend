@@ -21,7 +21,7 @@ public interface PeriodRepository extends JpaRepository<Period, Long> {
 
 
     @Query("SELECT DISTINCT pe FROM Period pe WHERE :today BETWEEN pe.startDate AND pe.dueDate")
-    Period findActivePeriod(@Param("today") LocalDate today);
+    Optional<Period> findActivePeriod(@Param("today") LocalDate today);
 
     @Query(value = """
         SELECT 

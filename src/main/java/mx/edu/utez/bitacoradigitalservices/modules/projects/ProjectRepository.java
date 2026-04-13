@@ -57,6 +57,12 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             , nativeQuery = true)
     StudentProfileProjection getStudentProfile(@Param("studentId") Long studentId);
 
+    @Query("SELECT DISTINCT p FROM Project p " +
+            "JOIN p.students shp " +
+            "WHERE shp.id = :studentId " +
+            "AND p.period.id = :periodId")
+    Project findActiveProjectByStudentId(@Param("periodId") Long periodId, @Param("studentId") Long studentId);
+
     @Query("SELECT p FROM Project p WHERE p.nameProject = :projectName AND p.period.id = :idPeriod")
     Project findExistingProject(@Param("projectName") String nameProject, @Param("idPeriod") Long period);
 }
