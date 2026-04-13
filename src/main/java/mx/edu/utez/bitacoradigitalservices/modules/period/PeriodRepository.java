@@ -26,7 +26,7 @@ public interface PeriodRepository extends JpaRepository<Period, Long> {
             "WHERE NOW() BETWEEN pe.start_date AND pe.due_date", nativeQuery = true)
     ActiveProjectsAndStudents findActiveProjectsAndStudents();
 
-    Period findByState(String state);
+    //Period findByState(String state);
 
     @Query("SELECT DISTINCT pe FROM Period pe WHERE :today BETWEEN pe.startDate AND pe.dueDate")
     Period findActivePeriod(@Param("today") LocalDateTime today);
