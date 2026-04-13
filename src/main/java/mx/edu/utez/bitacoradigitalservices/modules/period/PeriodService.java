@@ -2,11 +2,15 @@ package mx.edu.utez.bitacoradigitalservices.modules.period;
 
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.period.dtos.SavePeriodDTO;
+import mx.edu.utez.bitacoradigitalservices.modules.period.dtos.SuggestedDatesDTO;
+import mx.edu.utez.bitacoradigitalservices.modules.period.projections.PeriodLimitsProjection;
 import mx.edu.utez.bitacoradigitalservices.modules.period.utils.PeriodUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Service
 public class PeriodService {
@@ -52,17 +56,24 @@ public class PeriodService {
     public ResponseEntity<ApiResponse> update(SavePeriodDTO dto) {
         ApiResponse response;
         try {
-            Period existing = repository.findById(dto.id()).orElse(null);
-            if (existing != null) {
-                existing.setNamePeriod(dto.name());
-                existing.setStartDate(dto.startDate());
-                existing.setDueDate(dto.endDate());
+            Long overlappingPeriods = repository.getOverlappingPeriods(dto.startDate(), dto.endDate(), dto.id());
 
-                repository.save(existing);
-                response = new ApiResponse("Periodo registrado con éxito", HttpStatus.CREATED);
+            if(overlappingPeriods > 0) {
+                response = new ApiResponse("Rango de fechas inválido", true, HttpStatus.BAD_REQUEST);
             } else {
-                response = new ApiResponse("Periodo no encontrado", true, HttpStatus.NOT_FOUND);
+                Period existing = repository.findById(dto.id()).orElse(null);
+                if (existing != null) {
+                    existing.setNamePeriod(dto.name());
+                    existing.setStartDate(dto.startDate());
+                    existing.setDueDate(dto.endDate());
+
+                    repository.save(existing);
+                    response = new ApiResponse("Periodo registrado con éxito", HttpStatus.CREATED);
+                } else {
+                    response = new ApiResponse("Periodo no encontrado", true, HttpStatus.NOT_FOUND);
+                }
             }
+
 
         } catch (Exception e) {
             response = new ApiResponse("Error Interno del Servidor", true, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -85,6 +96,54 @@ public class PeriodService {
         } catch (Exception e) {
             response = new ApiResponse("Error Interno del Servidor", true, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<ApiResponse> getAbsoluteMaxDate() {
+        ApiResponse response;
+        SuggestedDatesDTO suggestedDatesDTO = new SuggestedDatesDTO();
+        LocalDate maxDate = repository.getAbsoluteMaxDate();
+
+        suggestedDatesDTO.setSuggestedStart(maxDate);
+
+        response = new ApiResponse("Fecha de inicio segerida calculad", suggestedDatesDTO, HttpStatus.OK);
+
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+    @Transactional(rollbackFor = Exception.class)
+    public ResponseEntity<ApiResponse> getPeriodLimits(SavePeriodDTO dto) {
+        ApiResponse response;
+        try {
+            PeriodLimitsProjection limits = repository.findLimitsForPeriod(
+                    dto.startDate(),
+                    dto.endDate(), dto.id()
+            ).orElse(null);
+
+            if(limits != null) {
+                LocalDate minAllowedDate =  limits.getLowerLimit();
+                LocalDate maxAllowedDate =  limits.getUpperLimit();
+
+                response = new ApiResponse(
+                        "Límites del periodo encontrados con éxito",
+                        limits,
+                        HttpStatus.OK
+                );
+            } else {
+                response = new ApiResponse(
+                        "Límites del periodo no encontrados",
+                        true,
+                        HttpStatus.NOT_FOUND
+                );
+            }
+        } catch (Exception e) {
+            response = new ApiResponse(
+                    "Error interno del servidor",
+                    true,
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+
         return new ResponseEntity<>(response, response.getStatus());
     }
 }

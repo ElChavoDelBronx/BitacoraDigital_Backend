@@ -2,6 +2,7 @@ package mx.edu.utez.bitacoradigitalservices.modules.period;
 
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.period.dtos.SavePeriodDTO;
+import mx.edu.utez.bitacoradigitalservices.modules.period.dtos.SummaryPeriodDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,10 +40,19 @@ public class PeriodController {
                 HttpStatus.OK
         );
     }
+    @GetMapping("/max-end-date")
+    public ResponseEntity<ApiResponse> getMaxEndDate() {
+        return service.getAbsoluteMaxDate();
+    }
 
     @PostMapping("")
     public ResponseEntity<ApiResponse> save(@RequestBody SavePeriodDTO dto) {
         return service.save(dto);
+    }
+
+    @PostMapping("/period-limits")
+    public ResponseEntity<ApiResponse> getPeriodLimits(@RequestBody SavePeriodDTO dto) {
+        return service.getPeriodLimits(dto);
     }
 
     @PutMapping("")

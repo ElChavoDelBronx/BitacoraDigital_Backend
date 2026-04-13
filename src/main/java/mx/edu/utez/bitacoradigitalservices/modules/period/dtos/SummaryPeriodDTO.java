@@ -2,13 +2,13 @@ package mx.edu.utez.bitacoradigitalservices.modules.period.dtos;
 
 import mx.edu.utez.bitacoradigitalservices.modules.period.Period;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class SummaryPeriodDTO {
     private Long id;
     private String name;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String status;
 
     public SummaryPeriodDTO(Period period) {
@@ -19,8 +19,8 @@ public class SummaryPeriodDTO {
         this.status = calculateStatus(period.getStartDate(), period.getDueDate());
     }
 
-    private String calculateStatus(LocalDateTime start, LocalDateTime end) {
-        LocalDateTime currentDate = LocalDateTime.now();
+    private String calculateStatus(LocalDate start, LocalDate end) {
+        LocalDate currentDate = LocalDate.now();
         if (currentDate.isBefore(start)) {
             return "Futuro";
         }
@@ -46,19 +46,19 @@ public class SummaryPeriodDTO {
         this.name = name;
     }
 
-    public LocalDateTime getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDateTime getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDateTime endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
