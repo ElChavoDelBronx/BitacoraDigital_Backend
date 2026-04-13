@@ -18,11 +18,11 @@ public interface PeriodRepository extends JpaRepository<Period, Long> {
             "OR :today < pe.startDate")
     List<BasicPeriodProjection> findActiveOrFuturePeriod(@Param("today") LocalDateTime today);
 
-    @Query(value = "SELECT COUNT(DISTINCT shp.id_student) AS activeStudents, " +
+    @Query(value = "SELECT " +
+            "(SELECT COUNT(*) FROM user WHERE rol = 'Estudiante' AND user_status = 'Active') AS activeStudents, " +
             "COUNT(DISTINCT p.id) AS activeProjects " +
             "FROM period pe " +
             "JOIN project p ON p.id_period = pe.id " +
-            "JOIN student_has_project shp ON shp.id_project = p.id " +
             "WHERE NOW() BETWEEN pe.start_date AND pe.due_date", nativeQuery = true)
     ActiveProjectsAndStudents findActiveProjectsAndStudents();
 

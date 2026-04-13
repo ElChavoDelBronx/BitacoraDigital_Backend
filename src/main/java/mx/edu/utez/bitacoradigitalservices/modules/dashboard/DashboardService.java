@@ -1,15 +1,14 @@
 package mx.edu.utez.bitacoradigitalservices.modules.dashboard;
 
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
-import mx.edu.utez.bitacoradigitalservices.modules.dashboard.dtos.AdminDashboardDTO;
-import mx.edu.utez.bitacoradigitalservices.modules.dashboard.dtos.AdminStatisticsDTO;
-import mx.edu.utez.bitacoradigitalservices.modules.dashboard.dtos.StudentDashboardDTO;
-import mx.edu.utez.bitacoradigitalservices.modules.dashboard.dtos.StudentStatisticsDTO;
+import mx.edu.utez.bitacoradigitalservices.modules.dashboard.dtos.*;
 import mx.edu.utez.bitacoradigitalservices.modules.dashboard.projections.ActiveProjectsAndStudents;
+import mx.edu.utez.bitacoradigitalservices.modules.dashboard.projections.ProjectProgressProjection;
 import mx.edu.utez.bitacoradigitalservices.modules.dashboard.projections.RecentEvidences;
 import mx.edu.utez.bitacoradigitalservices.modules.dashboard.projections.StudentDashboardTaskCount;
 import mx.edu.utez.bitacoradigitalservices.modules.evidence.EvidenceRepository;
 import mx.edu.utez.bitacoradigitalservices.modules.period.PeriodRepository;
+import mx.edu.utez.bitacoradigitalservices.modules.projects.ProjectRepository;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.Task;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.TaskRepository;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.utils.TaskUtils;
@@ -26,11 +25,13 @@ public class DashboardService {
     private final TaskRepository taskRepository;
     private final PeriodRepository periodRepository;
     private final EvidenceRepository evidenceRepository;
+    private final ProjectRepository projectRepository;
 
-    public DashboardService(TaskRepository taskRepository, PeriodRepository periodRepository, EvidenceRepository evidenceRepository) {
+    public DashboardService(TaskRepository taskRepository, PeriodRepository periodRepository, EvidenceRepository evidenceRepository, ProjectRepository projectRepository) {
         this.taskRepository = taskRepository;
         this.periodRepository = periodRepository;
         this.evidenceRepository = evidenceRepository;
+        this.projectRepository = projectRepository;
     }
 
     @Transactional(readOnly = true)
@@ -40,7 +41,7 @@ public class DashboardService {
         StudentDashboardTaskCount taskCount = taskRepository.findStudentDashboardTaskCount(studentId);
         List<Task> recentTasks = taskRepository.findRecentTasksByStudent(studentId);
         Long validatedHours = taskRepository.countValidateHoursByStudent(studentId);
-        String periodAlias = periodRepository.findActivePeriod(LocalDateTime.now()).getNamePeriod();
+        String periodAlias = periodRepository.findActiveOrFuturePeriod(LocalDateTime.now()).getFirst().getPeriodAlias();
 
         response = new ApiResponse(
                 "Información encontrada con éxito",
@@ -61,17 +62,39 @@ public class DashboardService {
         ActiveProjectsAndStudents active = periodRepository.findActiveProjectsAndStudents();
         long completedTasks = taskRepository.countCompletedTasks();
         List<RecentEvidences> recentEvidences = evidenceRepository.getRecentEvidences();
+        List<ProjectProgressProjection> advance = projectRepository.findTop4ProjectProgress();
 
 
         response = new ApiResponse(
                 "Información encontrada con éxito",
                 new AdminDashboardDTO(
                         new AdminStatisticsDTO(completedTasks, active.getActiveStudents(), active.getActiveProjects()),
-                        recentEvidences, completedTasks
+                        recentEvidences,
+                        completedTasks,
+                        advance
                 ),
                 HttpStatus.OK
         );
 
+        return new ResponseEntity<>(response, response.getStatus());
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<ApiResponse> getAdvisorDashboard(Long adviserId) {
+        long totalTasks = taskRepository.countTotalTasksByAdviser(adviserId);
+        long inProgress = taskRepository.countInProgressTasksByAdviser(adviserId);
+        long validatedHours = evidenceRepository.sumValidatedHoursByAdviser(adviserId);
+
+        List<RecentEvidences> recent = evidenceRepository.getRecentEvidencesByAdviser(adviserId);
+        List<ProjectProgressProjection> advance = projectRepository.findTop4ProjectProgressByAdviser(adviserId);
+
+        AdvisorDashboardDTO dto = new AdvisorDashboardDTO(
+                new AdvisorStatisticsDTO(totalTasks, inProgress, validatedHours),
+                recent,
+                advance
+        );
+
+        ApiResponse response = new ApiResponse("Dashboard de asesor obtenido", dto, HttpStatus.OK);
         return new ResponseEntity<>(response, response.getStatus());
     }
 }

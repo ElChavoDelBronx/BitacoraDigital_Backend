@@ -49,4 +49,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "FROM Task t JOIN Evidence e ON e.id_task = t.id " +
             "WHERE t.id_student = :studentId AND e.status = 'Approved'", nativeQuery = true)
     Long countValidateHoursByStudent(@Param("studentId") Long studentId);
+
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.project.adviser.id = :adviserId")
+    long countTotalTasksByAdviser(@Param("adviserId") Long adviserId);
+
+    @Query("SELECT COUNT(t) FROM Task t WHERE t.project.adviser.id = :adviserId AND t.status = 'InProgress'")
+    long countInProgressTasksByAdviser(@Param("adviserId") Long adviserId);
 }

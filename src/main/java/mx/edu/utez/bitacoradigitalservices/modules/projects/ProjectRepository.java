@@ -1,5 +1,6 @@
 package mx.edu.utez.bitacoradigitalservices.modules.projects;
 
+import mx.edu.utez.bitacoradigitalservices.modules.dashboard.projections.ProjectProgressProjection;
 import mx.edu.utez.bitacoradigitalservices.modules.profile.dtos.StudentProfileProjection;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.dtos.ProjectSummaryDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -59,4 +60,21 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query("SELECT p FROM Project p WHERE p.nameProject = :projectName AND p.period.id = :idPeriod")
     Project findExistingProject(@Param("projectName") String nameProject, @Param("idPeriod") Long period);
+
+    @Query(value = "SELECT p.id AS id, p.name_project AS title, " +
+            "COALESCE(ROUND((SELECT SUM(e.worked_hours) FROM evidence e JOIN task t ON e.id_task = t.id " +
+            "WHERE t.id_project = p.id AND e.status = 'Approved') * 100.0 / NULLIF(p.needed_hours, 0)), 0) AS progress " +
+            "FROM project p " +
+            "ORDER BY (SELECT MAX(e2.upload_date) FROM evidence e2 JOIN task t2 ON e2.id_task = t2.id WHERE t2.id_project = p.id) DESC, p.id DESC LIMIT 4",
+            nativeQuery = true)
+    List<ProjectProgressProjection> findTop4ProjectProgress();
+
+    @Query(value = "SELECT p.id AS id, p.name_project AS title, " +
+            "COALESCE(ROUND((SELECT SUM(e.worked_hours) FROM evidence e JOIN task t ON e.id_task = t.id " +
+            "WHERE t.id_project = p.id AND e.status = 'Approved') * 100.0 / NULLIF(p.needed_hours, 0)), 0) AS progress " +
+            "FROM project p WHERE p.id_adviser = :adviserId " +
+            "ORDER BY (SELECT MAX(e2.upload_date) FROM evidence e2 JOIN task t2 ON e2.id_task = t2.id WHERE t2.id_project = p.id) DESC, p.id DESC LIMIT 4",
+            nativeQuery = true)
+    List<ProjectProgressProjection> findTop4ProjectProgressByAdviser(@Param("adviserId") Long adviserId);
+
 }
