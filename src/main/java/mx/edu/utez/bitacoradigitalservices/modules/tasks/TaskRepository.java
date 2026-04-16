@@ -1,6 +1,7 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 
 import mx.edu.utez.bitacoradigitalservices.modules.dashboard.projections.StudentDashboardTaskCount;
+import mx.edu.utez.bitacoradigitalservices.modules.evidence.Evidence;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.BasicTaskProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,7 +30,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("SELECT COUNT(t) FROM Task t WHERE t.project.id = :projectId AND t.status = 'DONE'")
     long countCompletedTasksByProjectId(@Param("projectId") Long projectId);
 
-    @Query("SELECT COALESCE(SUM(t.loggedHours), 0) FROM Task t WHERE t.student.id = :studentId AND t.status = 'DONE'")
+    @Query("SELECT COALESCE(SUM(e.workedHours), 0) FROM Evidence e WHERE e.task.student.id = :studentId AND e.status = 'Approved'")
     double sumLoggedHoursByStudentId(@Param("studentId") Long studentId);
 
     @Query(value = "SELECT COUNT(DISTINCT CASE WHEN t.status = 'Completed' THEN t.id END) AS completedTask, " +

@@ -1,6 +1,7 @@
 package mx.edu.utez.bitacoradigitalservices.modules.tasks;
 
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
+import mx.edu.utez.bitacoradigitalservices.kernel.exceptions.ResourceNotFoundException;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.Project;
 import mx.edu.utez.bitacoradigitalservices.modules.projects.ProjectRepository;
 import mx.edu.utez.bitacoradigitalservices.modules.subtasks.SubTask;
@@ -128,7 +129,7 @@ public class TaskService {
             taskRepository.save(task);
             return "Tarea actualizada exitosamente";
         }
-        throw new RuntimeException("Tarea no encontrada");
+        throw new ResourceNotFoundException("Tarea no encontrada");
     }
 
     @Transactional(rollbackFor = {SQLException.class, Exception.class})

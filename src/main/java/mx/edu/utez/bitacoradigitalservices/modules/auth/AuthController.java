@@ -4,6 +4,7 @@ import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.AuthRequest;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.AuthResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.ChangePasswordRequest;
+import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.FirstLoginRequest;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.ResetPasswordRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/login")
+
     public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
         try {
             AuthResponse response = authService.login(authRequest);
@@ -43,42 +45,33 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/request-reset")
-    public ResponseEntity<?> requestReset(@RequestBody ResetPasswordRequest request) {
-        try {
+        @PostMapping("/request-reset")
+        public ResponseEntity<ApiResponse> requestReset (@RequestBody ResetPasswordRequest request){
             authService.requestPasswordReset(request);
             ApiResponse response = new ApiResponse(
                     "Si el correo electrónico existe en nuestro sistema, se ha enviado un enlace de recuperación.",
                     HttpStatus.OK
             );
-            return new ResponseEntity<>(response, response.getStatus());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al procesar la solicitud");
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
-    }
 
-    @PostMapping("/verify-reset")
-    public ResponseEntity<?> verifyReset(@RequestBody ChangePasswordRequest request) {
-        try {
+        @PostMapping("/verify-reset")
+        public ResponseEntity<ApiResponse> verifyReset (@RequestBody ChangePasswordRequest request){
             ApiResponse response = authService.verifyReset(request);
             return new ResponseEntity<>(response, response.getStatus());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
         }
-    }
 
-    @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
-        try {
-            authService.changePassword(request);
-            AuthRequest authLogin = new AuthRequest();
-            authLogin.setEmail(request.getEmail());
-            authLogin.setPassword(request.getNewPassword());
-            return login(authLogin);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+        @PostMapping("/change-password")
+        public ResponseEntity<?> changePassword (@RequestBody ChangePasswordRequest request){
+            try {
+                authService.changePassword(request);
+                AuthRequest authLogin = new AuthRequest();
+                authLogin.setEmail(request.getEmail());
+                authLogin.setPassword(request.getNewPassword());
+                return login(authLogin);
+            } catch (RuntimeException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+            }
         }
+
     }
-
-
-}

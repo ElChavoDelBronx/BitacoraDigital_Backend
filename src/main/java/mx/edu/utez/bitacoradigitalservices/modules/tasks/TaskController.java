@@ -5,6 +5,7 @@ import mx.edu.utez.bitacoradigitalservices.modules.tasks.dto.TaskUpdateDto;
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.SaveTaskDTO;
 import mx.edu.utez.bitacoradigitalservices.modules.tasks.dtos.UpdateTaskDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,13 +49,10 @@ public class TaskController {
         return taskService.updateTask(dto);
     }
     @PutMapping("/{id}/status")
-    public ResponseEntity<?> updateStatus(@PathVariable("id") Long id, @RequestBody TaskUpdateDto request) {
-        try {
-            String result = taskService.updateTaskStatusAndHours(id, request);
-            return ResponseEntity.ok(result);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
-        }
+    public ResponseEntity<ApiResponse> updateStatus(@PathVariable("id") Long id, @RequestBody TaskUpdateDto request) {
+        taskService.updateTaskStatusAndHours(id, request);
+        ApiResponse response = new ApiResponse("Tarea actualizada exitosamente", HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -5,9 +5,15 @@ public class AuthResponse {
     private String role;
     private Long userId;
     private String userName;
+
     private boolean firstSigIn;
 
-    public AuthResponse(String token, String role,  Long userId,  String userName, boolean firstSigIn) {
+    public AuthResponse() {
+    }
+
+
+    public AuthResponse(String token, String role, Long userId, String userName, boolean firstSignIn) {
+
         this.token = token;
         this.role = role;
         this.userId = userId;
@@ -30,3 +36,5 @@ public class AuthResponse {
     public boolean isFirstSigIn() { return firstSigIn; }
     public void setFirstSigIn(boolean firstSigIn) { this.firstSigIn = firstSigIn; }
 }
+
+

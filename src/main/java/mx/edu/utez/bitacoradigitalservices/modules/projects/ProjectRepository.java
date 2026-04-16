@@ -16,14 +16,15 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "CONCAT(u.name_user, ' ', u.lastname) AS advisorName, pe.name_period AS periodName, " +
             "COUNT(DISTINCT shp.id_student) AS studentCount, COUNT(DISTINCT t.id) AS totalTasks, " +
             "COUNT(DISTINCT CASE WHEN t.status = 'Completed' THEN t.id END) AS completedTasks, " +
-            "COALESCE(SUM(DISTINCT CASE WHEN e.status = 'Approved' THEN e.worked_hours END), 0) AS workedHours " +
+            "COALESCE(SUM(DISTINCT CASE WHEN e.status = 'Approved' THEN e.worked_hours END), 0) AS workedHours, " +
+            "p.needed_hours AS neededHours " +
             "FROM project p " +
             "JOIN user u ON p.id_adviser = u.id " +
             "JOIN period pe ON p.id_period = pe.id " +
             "LEFT JOIN student_has_project shp ON p.id = shp.id_project " +
             "LEFT JOIN task t ON p.id = t.id_project " +
             "LEFT JOIN evidence e ON t.id = e.id_task " +
-            "GROUP BY p.id, p.name_project, p.description, CONCAT(u.name_user, ' ', u.lastname), pe.name_period",
+            "GROUP BY p.id, p.name_project, p.description, CONCAT(u.name_user, ' ', u.lastname), pe.name_period, p.needed_hours",
             nativeQuery = true)
     List<ProjectSummaryDTO> findProjectSummary();
     @Query(value =
@@ -31,7 +32,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
                     "CONCAT(u.name_user, ' ', u.lastname) AS advisorName, pe.name_period AS periodName, " +
                     "COUNT(DISTINCT shp.id_student) AS studentCount, COUNT(DISTINCT t.id) AS totalTasks, " +
                     "COUNT(DISTINCT CASE WHEN t.status = 'Completed' THEN t.id END) AS completedTasks, " +
-                    "COALESCE(SUM(DISTINCT CASE WHEN e.status = 'Approved' THEN e.worked_hours END), 0) AS workedHours " +
+                    "COALESCE(SUM(DISTINCT CASE WHEN e.status = 'Approved' THEN e.worked_hours END), 0) AS workedHours, " +
+                    "p.needed_hours AS neededHours " +
                     "FROM project p " +
                     "JOIN user u ON p.id_adviser = u.id " +
                     "JOIN period pe ON p.id_period = pe.id " +
@@ -39,7 +41,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
                     "LEFT JOIN task t ON p.id = t.id_project " +
                     "LEFT JOIN evidence e ON t.id = e.id_task " +
                     "WHERE p.id_adviser = :advisorId " +
-                    "GROUP BY p.id, p.name_project, p.description, CONCAT(u.name_user, ' ', u.lastname), pe.name_period",
+                    "GROUP BY p.id, p.name_project, p.description, CONCAT(u.name_user, ' ', u.lastname), pe.name_period, p.needed_hours",
             nativeQuery = true)
     List<ProjectSummaryDTO> findProjectSummaryByAdvisor(@Param("advisorId") Long advisorId);
 

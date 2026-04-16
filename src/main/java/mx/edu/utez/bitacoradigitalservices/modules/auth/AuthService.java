@@ -1,9 +1,12 @@
 package mx.edu.utez.bitacoradigitalservices.modules.auth;
 
 import mx.edu.utez.bitacoradigitalservices.kernel.ApiResponse;
+import mx.edu.utez.bitacoradigitalservices.kernel.exceptions.BusinessException;
+import mx.edu.utez.bitacoradigitalservices.kernel.exceptions.ResourceNotFoundException;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.AuthRequest;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.AuthResponse;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.ChangePasswordRequest;
+import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.FirstLoginRequest;
 import mx.edu.utez.bitacoradigitalservices.modules.auth.dto.ResetPasswordRequest;
 import mx.edu.utez.bitacoradigitalservices.modules.users.User;
 import mx.edu.utez.bitacoradigitalservices.modules.users.UserRepository;
@@ -46,6 +49,7 @@ public class AuthService {
 
                 user.setToken(token);
                 userRepository.save(user);
+
                 return new AuthResponse(
                         token,
                         user.getRol(),
@@ -53,6 +57,7 @@ public class AuthService {
                         String.format("%s %s", user.getNameUser(), user.getLastName()),
                         user.isFirstSignIn()
                 );
+
             }
         }
         throw new RuntimeException("Credenciales no válidas");
@@ -94,6 +99,24 @@ public class AuthService {
             );
         }
         throw new RuntimeException("El código es inválido o no pertenece a este correo");
+    }
+
+    public AuthResponse firstLogin(FirstLoginRequest request) {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        if (!user.isFirstSignIn()) {
+            throw new BusinessException("Este usuario ya completó su primer inicio de sesión", HttpStatus.BAD_REQUEST);
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        user.setFirstSignIn(false);
+
+        String token = UUID.randomUUID().toString();
+        user.setToken(token);
+        userRepository.save(user);
+
+        return new AuthResponse(token, user.getRol(), user.getId(), String.format("%s %s", user.getNameUser(), user.getLastName()), false);
     }
 
     public String changePassword(ChangePasswordRequest request) {

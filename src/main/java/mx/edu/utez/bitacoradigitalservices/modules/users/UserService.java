@@ -61,6 +61,7 @@ public class UserService {
         user.setEmail(dto.email());
         user.setRol(dto.rol());
         user.setUserStatus(UserStatus.Active);
+        user.setFirstSignIn(true);
         user.setPassword("admin");
         try {
             user.setPassword(passwordEncoder.encode(user.getPassword()));

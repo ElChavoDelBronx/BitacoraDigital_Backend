@@ -10,4 +10,5 @@ public interface ProjectSummaryDTO{
         Long getTotalTasks();
         Long getCompletedTasks();
         Long getWorkedHours();
+        Integer getNeededHours();
 }
